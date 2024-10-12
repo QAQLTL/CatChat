@@ -1,11 +1,10 @@
-from PySide6.QtUiTool import QUiLoader
-from PySide6.QtWidgets import QApplication
+import sys
+from PyQt6 import QtWidgets, uic
 
 if __name__ == '__main__':
-    app = QApplication([])
-    
-    loader = QUiLoader()
-    hb_window = loader.load("uichat.ui")
+    app = QtWidgets.QApplication([])
+
+    hb_window = uic.loadUi("uichat.ui")
     hb_window.show()
 
     app.exec()
