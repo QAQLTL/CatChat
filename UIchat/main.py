@@ -1,10 +1,11 @@
 import sys
-from PyQt6 import QtWidgets, uic
+from PyQt6 import QtWidgets
+from uichat import Ui_MainWindow
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-
-    hb_window = uic.loadUi("uichat.ui")
-    hb_window.show()
-
-    app.exec()
+    maw = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(maw)
+    maw.show()
+    sys.exit(app.exec())
