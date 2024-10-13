@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'IOTui.ui'
+# Form implementation generated from reading ui file 'Setting.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.2
 #
@@ -9,11 +9,11 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_IOT_UI(object):
-    def setupUi(self, IOT_UI):
-        IOT_UI.setObjectName("IOT_UI")
-        IOT_UI.resize(756, 982)
-        self.horizontalLayout = QtWidgets.QHBoxLayout(IOT_UI)
+class Ui_Setting(object):
+    def setupUi(self, Setting):
+        Setting.setObjectName("Setting")
+        Setting.resize(400, 300)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(Setting)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setObjectName("verticalLayout_4")
@@ -22,10 +22,10 @@ class Ui_IOT_UI(object):
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        self.idshow_Lb = QtWidgets.QLabel(parent=IOT_UI)
+        self.idshow_Lb = QtWidgets.QLabel(parent=Setting)
         self.idshow_Lb.setObjectName("idshow_Lb")
         self.verticalLayout.addWidget(self.idshow_Lb)
-        self.IPshow_Lb = QtWidgets.QLabel(parent=IOT_UI)
+        self.IPshow_Lb = QtWidgets.QLabel(parent=Setting)
         self.IPshow_Lb.setObjectName("IPshow_Lb")
         self.verticalLayout.addWidget(self.IPshow_Lb)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
@@ -36,11 +36,11 @@ class Ui_IOT_UI(object):
         self.verticalLayout_3.addLayout(self.verticalLayout)
         self.horizontalLayout.addLayout(self.verticalLayout_3)
 
-        self.retranslateUi(IOT_UI)
-        QtCore.QMetaObject.connectSlotsByName(IOT_UI)
+        self.retranslateUi(Setting)
+        QtCore.QMetaObject.connectSlotsByName(Setting)
 
-    def retranslateUi(self, IOT_UI):
+    def retranslateUi(self, Setting):
         _translate = QtCore.QCoreApplication.translate
-        IOT_UI.setWindowTitle(_translate("IOT_UI", "Form"))
-        self.idshow_Lb.setText(_translate("IOT_UI", "id"))
-        self.IPshow_Lb.setText(_translate("IOT_UI", "ip"))
+        Setting.setWindowTitle(_translate("Setting", "Frame"))
+        self.idshow_Lb.setText(_translate("Setting", "id"))
+        self.IPshow_Lb.setText(_translate("Setting", "ip"))
