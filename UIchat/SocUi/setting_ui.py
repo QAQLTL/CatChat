@@ -1,4 +1,4 @@
-from Setting import Ui_Setting
+from UIchat.SocUi.UiSlp.Setting import Ui_Setting
 
 from PyQt6.QtWidgets import QFrame
 

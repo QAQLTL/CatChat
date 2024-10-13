@@ -1,14 +1,10 @@
-import sys
-from PyQt6.QtCore import Qt, QRect, QUrl
-from PyQt6.QtGui import QIcon, QPainter, QImage, QBrush, QColor, QFont, QDesktopServices
-from PyQt6.QtWidgets import QApplication, QFrame, QStackedWidget, QHBoxLayout, QLabel
+from PyQt6.QtWidgets import QStackedWidget, QHBoxLayout
 
-from qfluentwidgets import (NavigationInterface, NavigationItemPosition, NavigationWidget, MessageBox,
-                            isDarkTheme, setTheme, Theme, setThemeColor, qrouter, FluentWindow, NavigationAvatarWidget)
+from qfluentwidgets import (NavigationInterface, NavigationItemPosition)
 from qfluentwidgets import FluentIcon as FIF
 from qframelesswindow import FramelessWindow, StandardTitleBar
 
-from setting_ui import SettingInterFace
+from SocUi import *
 
 class Window(FramelessWindow):
     def __init__(self):
@@ -34,6 +30,7 @@ class Window(FramelessWindow):
         self.hBoxLayout.setStretchFactor(self.stackWidget, 1)
 
     def initNavigation(self):
+
         self.addSubInterface(self.settingInterface, FIF.SETTING, 'Settings', NavigationItemPosition.BOTTOM)
 
 
