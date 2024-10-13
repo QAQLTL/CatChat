@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QStackedWidget, QHBoxLayout
 
-from qfluentwidgets import (NavigationInterface, NavigationItemPosition)
+from SocUi.Custom_Widget import *
+from qfluentwidgets import (NavigationInterface, NavigationItemPosition, NavigationAvatarWidget)
 from qfluentwidgets import FluentIcon as FIF
 from qframelesswindow import FramelessWindow, StandardTitleBar
 
@@ -30,7 +31,12 @@ class Window(FramelessWindow):
         self.hBoxLayout.setStretchFactor(self.stackWidget, 1)
 
     def initNavigation(self):
-
+        self.navigationInterface.addWidget(
+            routeKey='avatar',
+            widget=NavigationAvatarWidget('zhiyiYo', 'resource/shoko.png'),
+            onClick=self.showMessageBox,
+            position=NavigationItemPosition.BOTTOM,
+        )
         self.addSubInterface(self.settingInterface, FIF.SETTING, 'Settings', NavigationItemPosition.BOTTOM)
 
 
@@ -48,3 +54,8 @@ class Window(FramelessWindow):
 
     def switchTo(self, widget):
         self.stackWidget.setCurrentWidget(widget)
+
+    def showMessageBox(self):
+        w = CustomMessageBox(self)
+        if w.exec():
+            print(w.urlLineEdit.text())
