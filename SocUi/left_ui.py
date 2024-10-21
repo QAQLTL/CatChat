@@ -1,11 +1,11 @@
 from PyQt6.QtWidgets import QStackedWidget, QHBoxLayout
 
-from SocUi.Custom_Widget import *
 from qfluentwidgets import (NavigationInterface, NavigationItemPosition, NavigationAvatarWidget)
 from qfluentwidgets import FluentIcon as FIF
 from qframelesswindow import FramelessWindow, StandardTitleBar
 
-from SocUi import *
+from .CusWidget import *
+from .setting_ui import *
 
 class Window(FramelessWindow):
     def __init__(self):
@@ -15,6 +15,7 @@ class Window(FramelessWindow):
 
         self.hBoxLayout = QHBoxLayout(self)
         self.navigationInterface = NavigationInterface(self, showMenuButton=True)
+        self.navigationInterface.setExpandWidth(150)
 
         #subset
         self.stackWidget = QStackedWidget(self)
@@ -25,7 +26,7 @@ class Window(FramelessWindow):
 
     def initLayout(self):
         self.hBoxLayout.setSpacing(5)
-        self.hBoxLayout.setContentsMargins(0, self.titleBar.height(), 0, 0)
+        self.hBoxLayout.setContentsMargins(10, self.titleBar.height(), 0, self.titleBar.height()-10)
         self.hBoxLayout.addWidget(self.navigationInterface)
         self.hBoxLayout.addWidget(self.stackWidget)
         self.hBoxLayout.setStretchFactor(self.stackWidget, 1)

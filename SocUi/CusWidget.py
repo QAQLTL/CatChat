@@ -1,5 +1,3 @@
-from PyQt6.QtGui import QColor
-from PyQt6.QtCore import QUrl
 from qfluentwidgets import (MessageBoxBase, SubtitleLabel, LineEdit)
 
 class CustomMessageBox(MessageBoxBase):
