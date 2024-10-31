@@ -42,10 +42,9 @@ class QCircleImage(QLabel):
         self.setPixmap(self.__pixmap)
         self.setScaledContents(True)
 
-    def setborder(self, border_width=3, border_style=Qt.PenStyle.DashLine):
-        # self.setStyleSheet(f"""
-        # border: 3px dashed {self.__state};
-        # border-radius: 50%;
-        # padding: 1px 1px 1px 1px;
-        # """)
-        pass
+    def setborder(self):
+        self.setStyleSheet(f"""
+        border: 3px Solid {self.__state};
+        border-radius: 50%;
+        padding: 1px 1px 1px 1px;
+        """)

@@ -1,4 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
+from PyQt6.QtWidgets import QLabel
 
 from .QCircleimage import QCircleImage
 
@@ -33,5 +34,9 @@ class QHInformat(QtWidgets.QWidget):
         # 設置頭像
         self.cr_img = QCircleImage(self)
         self.cr_img.setimage("res/avatar.jpg")
-        self.cr_img.setborder()
-        self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignCenter|QtCore.Qt.AlignmentFlag.AlignTop)
+
+        #設置名稱
+        self.name = QLabel(self)
+        self.name.setText("QAQ")
+        self.informat_vlayout.addWidget(self.name, alignment=QtCore.Qt.AlignmentFlag.AlignCenter|QtCore.Qt.AlignmentFlag.AlignTop)
