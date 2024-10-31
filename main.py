@@ -1,7 +1,6 @@
 import sys
 
 from PyQt6.QtWidgets import QApplication
-from qframelesswindow import StandardTitleBar
 
 from controller import MainV
 

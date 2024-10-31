@@ -1,4 +1,5 @@
 from PyQt6.QtGui import QColor
+from PyQt6 import QtCore
 from PyQt6.QtWidgets import QGraphicsDropShadowEffect
 from qframelesswindow import StandardTitleBar
 
@@ -10,10 +11,11 @@ class MainV(MainFrame):
         super().__init__()
         self.setTitleBar(StandardTitleBar(self))
         self.Informat_QW = QHInformat(parent=self)
-        self.MainLayout.addWidget(self.Informat_QW)
+        self.MainLayout.addWidget(self.Informat_QW, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         self.navigationbarshadow()
 
     def navigationbarshadow(self):
+
         shadow = QGraphicsDropShadowEffect(self)
         shadow.setXOffset(2)
         shadow.setYOffset(3)

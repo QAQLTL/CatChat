@@ -1,8 +1,10 @@
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore, QtGui
+
+from .QCircleimage import QCircleImage
 
 
 class QHInformat(QtWidgets.QWidget):
-    def __init__(self, parent=None):  # 修正這裡的錯誤
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.resize(250, 250)
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding,
@@ -27,3 +29,9 @@ class QHInformat(QtWidgets.QWidget):
             "border-radius: 20px;\n"
             "}"
         )
+
+        # 設置頭像
+        self.cr_img = QCircleImage(self)
+        self.cr_img.setimage("res/avatar.jpg")
+        self.cr_img.setborder()
+        self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
