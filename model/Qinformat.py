@@ -24,6 +24,7 @@ class QHInformat(QtWidgets.QWidget):
 
         # informat_widget 的佈局設置
         self.informat_vlayout = QtWidgets.QVBoxLayout(self.informat_widget)
+        self.informat_vlayout.setSpacing(0)
         self.informat_widget.setStyleSheet(
             "QWidget {\n"
             "background: rgb(206, 255, 255);\n"
@@ -34,9 +35,17 @@ class QHInformat(QtWidgets.QWidget):
         # 設置頭像
         self.cr_img = QCircleImage(self)
         self.cr_img.setimage("res/avatar.jpg")
-        self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignCenter|QtCore.Qt.AlignmentFlag.AlignTop)
+        self.cr_img.setborder()
+        self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
 
         #設置名稱
+        font = QtGui.QFont()
+        font.setFamily('Microsoft Sans Serif')
+        font.setPointSize(12)
         self.name = QLabel(self)
         self.name.setText("QAQ")
-        self.informat_vlayout.addWidget(self.name, alignment=QtCore.Qt.AlignmentFlag.AlignCenter|QtCore.Qt.AlignmentFlag.AlignTop)
+        self.name.setFont(font)
+        self.name.setStyleSheet("""
+        color:#5B5B5B;
+        """)
+        self.informat_vlayout.addWidget(self.name, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
