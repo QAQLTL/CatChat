@@ -15,27 +15,32 @@ class QHInformat(QtWidgets.QWidget):
         self.setMinimumSize(QtCore.QSize(250, 250))
         self.setMaximumSize(QtCore.QSize(250, 250))
 
-        # 設置垂直佈局
-        self.vlayout = QtWidgets.QVBoxLayout(self)
-
         # 創建並添加 informat_widget
         self.informat_widget = QtWidgets.QWidget(parent=self)
-        self.vlayout.addWidget(self.informat_widget)
+        self.informat_widget.setObjectName("Information_Box")
+        self.informat_widget.setStyleSheet(
+            "#Information_Box {\n"
+            "background: #BBFFFF;\n"
+            "border-radius: 20px;\n"
+            "padding: 50%;\n"
+            "}"
+        )
 
         # informat_widget 的佈局設置
         self.informat_vlayout = QtWidgets.QVBoxLayout(self.informat_widget)
         self.informat_vlayout.setSpacing(0)
-        self.informat_widget.setStyleSheet(
-            "QWidget {\n"
-            "background: rgb(206, 255, 255);\n"
-            "border-radius: 20px;\n"
-            "}"
-        )
 
         # 設置頭像
         self.cr_img = QCircleImage(self)
         self.cr_img.setimage("res/avatar.jpg")
         self.cr_img.setborder()
+        # shadow
+        shadow = QtWidgets.QGraphicsDropShadowEffect(self)
+        shadow.setXOffset(1)
+        shadow.setYOffset(1)
+        shadow.setBlurRadius(20)
+        shadow.setColor(QtGui.QColor(0, 0, 0, 200))
+        self.cr_img.setGraphicsEffect(shadow)
         self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
 
         #設置名稱
@@ -46,6 +51,6 @@ class QHInformat(QtWidgets.QWidget):
         self.name.setText("QAQ")
         self.name.setFont(font)
         self.name.setStyleSheet("""
-        color:#5B5B5B;
+        color:#4F4F4F;
         """)
         self.informat_vlayout.addWidget(self.name, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
