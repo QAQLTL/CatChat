@@ -7,13 +7,13 @@ from .QCircleimage import QCircleImage
 class QHInformat(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.resize(250, 250)
+        self.resize(250, 500)
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding,
                                            QtWidgets.QSizePolicy.Policy.MinimumExpanding)
         sizepolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
         self.setSizePolicy(sizepolicy)
         self.setMinimumSize(QtCore.QSize(250, 250))
-        self.setMaximumSize(QtCore.QSize(250, 250))
+        # self.setMaximumSize(QtCore.QSize(250, 250))
 
         # 創建並添加 informat_widget
         self.informat_widget = QtWidgets.QWidget(parent=self)
@@ -22,7 +22,6 @@ class QHInformat(QtWidgets.QWidget):
             "#Information_Box {\n"
             "background: #BBFFFF;\n"
             "border-radius: 20px;\n"
-            "padding: 50%;\n"
             "}"
         )
 
@@ -41,7 +40,7 @@ class QHInformat(QtWidgets.QWidget):
         shadow.setBlurRadius(20)
         shadow.setColor(QtGui.QColor(0, 0, 0, 200))
         self.cr_img.setGraphicsEffect(shadow)
-        self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
 
         #設置名稱
         font = QtGui.QFont()
@@ -53,4 +52,4 @@ class QHInformat(QtWidgets.QWidget):
         self.name.setStyleSheet("""
         color:#4F4F4F;
         """)
-        self.informat_vlayout.addWidget(self.name, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.informat_vlayout.addWidget(self.name, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)

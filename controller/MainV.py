@@ -1,6 +1,6 @@
 from PyQt6.QtGui import QColor
 from PyQt6 import QtCore
-from PyQt6.QtWidgets import QGraphicsDropShadowEffect
+from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QGraphicsBlurEffect
 from qframelesswindow import StandardTitleBar
 
 from model import QHInformat
@@ -23,3 +23,4 @@ class MainV(MainFrame):
         shadow.setColor(QColor(0, 0, 0, 64))
 
         self.navigationbar.setGraphicsEffect(shadow)
+
