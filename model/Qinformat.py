@@ -28,6 +28,7 @@ class QHInformat(QtWidgets.QWidget):
         # informat_widget 的佈局設置
         self.informat_vlayout = QtWidgets.QVBoxLayout(self.informat_widget)
         self.informat_vlayout.setSpacing(0)
+        self.informat_vlayout.setContentsMargins(50, 50, 50, 150)
 
         # 設置頭像
         self.cr_img = QCircleImage(self)
