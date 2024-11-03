@@ -50,7 +50,7 @@ class QFullInformat(QtWidgets.QWidget):
         self.name_label.setFont(font)
         self.uuid_label = QLabel(self.bottom_widget)
         self.uuid_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
-        self.uuid_label.setText(f"UUID:{self.__uuid}")
+        self.uuid_label.setText(f"UUID: {self.__uuid}")
         self.uuid_label.setStyleSheet("""
         font-size: 10px;
         color: gray;
