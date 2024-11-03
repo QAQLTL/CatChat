@@ -32,7 +32,7 @@ class MainFrame(FramelessWindow):
         self.navigationbar = QtWidgets.QWidget(self)
         self.navigationbar.setSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
         self.navigationbar.setFixedSize(400, 40)
-        self.navigationbar.setStyleSheet("QWidget { background-color: rgb(255, 255, 255); border-radius: 20px; }")
+        self.navigationbar.setStyleSheet("QWidget { background-color: rgb(255, 255, 255); border-radius: 20px; border: 1px solid #E0E0E0}")
 
         self.navigationlayout.addWidget(self.navigationbar, alignment=QtCore.Qt.AlignmentFlag.AlignBottom)
         self.navigationlayout.addItem(QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,

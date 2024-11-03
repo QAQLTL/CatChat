@@ -1,2 +1,2 @@
-from .Qinformat import QHInformat
+from .Qinformat import QFullInformat
 # from .QCircleimage import QCircleImage

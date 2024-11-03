@@ -1,56 +1,68 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtWidgets import QLabel
 
-from .QCircleimage import QCircleImage
 
-
-class QHInformat(QtWidgets.QWidget):
+class QFullInformat(QtWidgets.QWidget):
     def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        self.resize(250, 500)
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding,
-                                           QtWidgets.QSizePolicy.Policy.MinimumExpanding)
-        sizepolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
-        self.setSizePolicy(sizepolicy)
-        self.setMinimumSize(QtCore.QSize(250, 250))
-        # self.setMaximumSize(QtCore.QSize(250, 250))
+        super().__init__(parent)
+        self.__uuid = None
 
-        # 創建並添加 informat_widget
-        self.informat_widget = QtWidgets.QWidget(parent=self)
-        self.informat_widget.setObjectName("Information_Box")
-        self.informat_widget.setStyleSheet(
-            "#Information_Box {\n"
-            "background: #BBFFFF;\n"
-            "border-radius: 20px;\n"
-            "}"
+        # 設置固定大小
+        self.setFixedSize(250, 250)
+        self.setObjectName("information_Box")
+
+        # 使用樣式表來設置背景圖片和圓角效果
+        self.setStyleSheet(
+            """#information_Box {
+            background-color: #BBFFFF;
+            border-radius: 20px;
+            border-image: url('D:/python/CatChat/res/avatar.jpg');
+            padding: 25px;
+            }"""
         )
+        self.setContentsMargins(2, 5, 0, 0)
 
-        # informat_widget 的佈局設置
-        self.informat_vlayout = QtWidgets.QVBoxLayout(self.informat_widget)
-        self.informat_vlayout.setSpacing(0)
-        self.informat_vlayout.setContentsMargins(50, 50, 50, 150)
-
-        # 設置頭像
-        self.cr_img = QCircleImage(self)
-        self.cr_img.setimage("res/avatar.jpg")
-        self.cr_img.setborder()
-        # shadow
-        shadow = QtWidgets.QGraphicsDropShadowEffect(self)
-        shadow.setXOffset(1)
-        shadow.setYOffset(1)
-        shadow.setBlurRadius(20)
-        shadow.setColor(QtGui.QColor(0, 0, 0, 200))
-        self.cr_img.setGraphicsEffect(shadow)
-        self.informat_vlayout.addWidget(self.cr_img, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
-
-        #設置名稱
-        font = QtGui.QFont()
-        font.setFamily('Microsoft Sans Serif')
-        font.setPointSize(12)
-        self.name = QLabel(self)
-        self.name.setText("QAQ")
-        self.name.setFont(font)
-        self.name.setStyleSheet("""
-        color:#4F4F4F;
+        # information_Box 的佈局設置
+        self.informat_vlayout = QtWidgets.QVBoxLayout(self)
+        self.bottom_widget = QtWidgets.QWidget(self)
+        self.bottom_widget.setFixedSize(self.width() / 1.1, self.height() / 4)
+        self.bottom_widget.setObjectName("Bottm_Widget")
+        self.bottom_widget.setStyleSheet("""
+        #Bottm_Widget {
+           background:rgba(255, 255, 255, 240);
+           border-radius: 15px;
+        }
         """)
-        self.informat_vlayout.addWidget(self.name, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.informat_vlayout.addWidget(self.bottom_widget, alignment=QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
+
+        self.bottom_layout = QtWidgets.QVBoxLayout(self.bottom_widget)
+        self.bottom_widget.setContentsMargins(0,0,0,0)
+
+        font = QtGui.QFont()
+        font.setFamily('Arial Black')
+        self.name_label = QLabel(self.bottom_widget)
+        self.name_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.name_label.setText("QAQ")
+        self.name_label.setStyleSheet("""
+        font-size: 20px;
+        color: gray;
+        """)
+        self.name_label.setFont(font)
+        self.uuid_label = QLabel(self.bottom_widget)
+        self.uuid_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.uuid_label.setText(f"UUID:{self.__uuid}")
+        self.uuid_label.setStyleSheet("""
+        font-size: 10px;
+        color: gray;
+        """)
+        self.bottom_layout.addWidget(self.name_label,
+                                     alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.bottom_layout.addWidget(self.uuid_label,
+                                     alignment=QtCore.Qt.AlignmentFlag.AlignBottom | QtCore.Qt.AlignmentFlag.AlignHCenter)
+
+        # 確保widget可見
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_StyledBackground, True)
+
+    def setuuid(self, uuid:str=None):
+        self.__uuid = uuid
+        self.uuid_label.update()
