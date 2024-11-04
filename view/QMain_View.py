@@ -7,7 +7,7 @@ class MainFrame(FramelessWindow):
         super().__init__(parent)
         self.setObjectName("MainUI")
         self.resize(1200, 700)
-        self.setFixedSize(1200, 700)
+        # self.setFixedSize(1200, 700)
         # Set size policy and stylesheet in one step
         self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
         self.setStyleSheet("#MainUI { background-color: rgb(255, 255, 255); }")
@@ -19,7 +19,9 @@ class MainFrame(FramelessWindow):
 
         # VLayout setup with MainLayout and navigation layout
         self.VLayout = QtWidgets.QVBoxLayout()
+        self.Leftlayout = QtWidgets.QVBoxLayout()
         self.MainLayout = QtWidgets.QHBoxLayout()
+        self.MainLayout.addLayout(self.Leftlayout)
         self.VLayout.addLayout(self.MainLayout)
 
         # Navigation layout setup with spacer items and navigation bar

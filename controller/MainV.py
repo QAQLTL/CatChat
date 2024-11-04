@@ -1,17 +1,21 @@
 from PyQt6.QtGui import QColor
 from PyQt6 import QtCore
-from PyQt6.QtWidgets import QGraphicsDropShadowEffect
+from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QVBoxLayout
 from qframelesswindow import StandardTitleBar
 
-from model import QFullInformat
+from model import QFullinformation, QFramelessmeun
 from view import MainFrame
 
 class MainV(MainFrame):
     def __init__(self):
         super().__init__()
         self.setTitleBar(StandardTitleBar(self))
-        self.fullinformat = QFullInformat(self)
-        self.MainLayout.addWidget(self.fullinformat, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.fullinformat = QFullinformation(self)
+        self.meun = QFramelessmeun(self)
+        self.Leftlayout.addWidget(self.fullinformat,
+                                  alignment=QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.Leftlayout.addWidget(self.meun,
+                                  alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         self.__shadowinit()
 
     def __shadowinit(self):
@@ -28,4 +32,3 @@ class MainV(MainFrame):
         shadow.setBlurRadius(10)
         shadow.setColor(QColor(0, 0, 0, 64))
         self.navigationbar.setGraphicsEffect(shadow)
-

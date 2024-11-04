@@ -1,12 +1,19 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtWidgets import QLabel
-from PyQt6.QtCore import QPropertyAnimation, QPoint, QEasingCurve
 
 
-class QFullInformat(QtWidgets.QWidget):
+class QFullinformation(QtWidgets.QWidget):
     def __init__(self, parent=None, uuid:str=None):
         super().__init__(parent)
         self.__uuid = uuid
+        # information_Box 的佈局設置
+        self.informat_vlayout = QtWidgets.QVBoxLayout(self)
+        # information bottom 設置
+        self.bottom_widget = QtWidgets.QWidget(self)
+        self.bottom_layout = QtWidgets.QVBoxLayout(self.bottom_widget)
+        # information 內容設置
+        self.name_label = QLabel(self.bottom_widget)
+        self.uuid_label = QLabel(self.bottom_widget)
 
         # 設置固定大小
         self.resize(250, 250)
@@ -16,18 +23,20 @@ class QFullInformat(QtWidgets.QWidget):
         self.setObjectName("information_Box")
 
         # 使用樣式表來設置背景圖片和圓角效果
-        self.setStyleSheet(
-            """#information_Box {
+        self.setStyleSheet("""#information_Box {
             background-color: #BBFFFF;
             border-radius: 20px;
             border-image: url('D:/python/CatChat/res/avatar.jpg');
-            }"""
-        )
+            }""")
         self.setContentsMargins(0, 0, 0, 0)
 
-        # information_Box 的佈局設置
-        self.informat_vlayout = QtWidgets.QVBoxLayout(self)
-        self.bottom_widget = QtWidgets.QWidget(self)
+        # 所有QWidgets的設置初始
+        self.ui_init()
+
+        # 確保widget可見
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_StyledBackground, True)
+
+    def ui_init(self):
         self.bottom_widget.setFixedSize(self.width() / 1.1, self.height() / 4)
         self.bottom_widget.setObjectName("Bottm_Widget")
         self.bottom_widget.setStyleSheet("""
@@ -37,13 +46,10 @@ class QFullInformat(QtWidgets.QWidget):
         }
         """)
         self.informat_vlayout.addWidget(self.bottom_widget, alignment=QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
-
-        self.bottom_layout = QtWidgets.QVBoxLayout(self.bottom_widget)
-        self.bottom_widget.setContentsMargins(0,0,0,0)
+        self.bottom_widget.setContentsMargins(0, 0, 0, 0)
 
         font = QtGui.QFont()
         font.setFamily('Arial Black')
-        self.name_label = QLabel(self.bottom_widget)
         self.name_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.name_label.setText("QAQ")
         self.name_label.setStyleSheet("""
@@ -51,7 +57,6 @@ class QFullInformat(QtWidgets.QWidget):
         color: gray;
         """)
         self.name_label.setFont(font)
-        self.uuid_label = QLabel(self.bottom_widget)
         self.uuid_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.uuid_label.setText(f"UUID: {self.__uuid}")
         self.uuid_label.setStyleSheet("""
@@ -63,23 +68,9 @@ class QFullInformat(QtWidgets.QWidget):
         self.bottom_layout.addWidget(self.uuid_label,
                                      alignment=QtCore.Qt.AlignmentFlag.AlignBottom | QtCore.Qt.AlignmentFlag.AlignHCenter)
 
-        # 確保widget可見
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_StyledBackground, True)
-
     def setuuid(self, uuid:str=None):
         self.__uuid = uuid
         self.uuid_label.update()
 
     def enterEvent(self, event):
-        # Start the animation with the current geometry
-        start_geometry = self.geometry()
-        # Define the new geometry with increased width and height
-        end_geometry = QtCore.QRect(start_geometry.x(), start_geometry.y(), 300, 300)
-
-        # Create the animation on the 'geometry' property
-        self.anim = QPropertyAnimation(self, b"maximumsize")
-        self.anim.setEasingCurve(QEasingCurve.Type.OutBounce)
-        self.anim.setDuration(1000)
-        self.anim.setStartValue(start_geometry)
-        self.anim.setEndValue(end_geometry)
-        self.anim.start()
+        pass

@@ -3,7 +3,7 @@ from PyQt6.QtGui import QPixmap, QPainter, QBitmap, QColor, QPen
 from PyQt6.QtWidgets import QLabel
 
 
-class QCircleImage(QLabel):
+class QCircleimage(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.setFixedSize(100, 100)
