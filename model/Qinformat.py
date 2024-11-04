@@ -1,14 +1,18 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtWidgets import QLabel
+from PyQt6.QtCore import QPropertyAnimation, QPoint, QEasingCurve
 
 
 class QFullInformat(QtWidgets.QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, uuid:str=None):
         super().__init__(parent)
-        self.__uuid = None
+        self.__uuid = uuid
 
         # 設置固定大小
-        self.setFixedSize(250, 250)
+        self.resize(250, 250)
+        self.setMinimumSize(250, 250)
+        self.setMaximumSize(250, 250)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
         self.setObjectName("information_Box")
 
         # 使用樣式表來設置背景圖片和圓角效果
@@ -17,10 +21,9 @@ class QFullInformat(QtWidgets.QWidget):
             background-color: #BBFFFF;
             border-radius: 20px;
             border-image: url('D:/python/CatChat/res/avatar.jpg');
-            padding: 25px;
             }"""
         )
-        self.setContentsMargins(2, 5, 0, 0)
+        self.setContentsMargins(0, 0, 0, 0)
 
         # information_Box 的佈局設置
         self.informat_vlayout = QtWidgets.QVBoxLayout(self)
@@ -66,3 +69,17 @@ class QFullInformat(QtWidgets.QWidget):
     def setuuid(self, uuid:str=None):
         self.__uuid = uuid
         self.uuid_label.update()
+
+    def enterEvent(self, event):
+        # Start the animation with the current geometry
+        start_geometry = self.geometry()
+        # Define the new geometry with increased width and height
+        end_geometry = QtCore.QRect(start_geometry.x(), start_geometry.y(), 300, 300)
+
+        # Create the animation on the 'geometry' property
+        self.anim = QPropertyAnimation(self, b"maximumsize")
+        self.anim.setEasingCurve(QEasingCurve.Type.OutBounce)
+        self.anim.setDuration(1000)
+        self.anim.setStartValue(start_geometry)
+        self.anim.setEndValue(end_geometry)
+        self.anim.start()
