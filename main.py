@@ -9,6 +9,7 @@ class Window(MainV):
         super().__init__()
 
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = Window()
