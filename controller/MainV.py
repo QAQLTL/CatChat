@@ -12,10 +12,8 @@ class MainV(MainFrame):
         self.setTitleBar(StandardTitleBar(self))
         self.fullinformat = QFullinformation(self)
         self.meun = QFramelessmeun(self)
-        self.Leftlayout.addWidget(self.fullinformat,
-                                  alignment=QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
-        self.Leftlayout.addWidget(self.meun,
-                                  alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.Leftlayout.addWidget(self.fullinformat)
+        self.Leftlayout.addWidget(self.meun)
         self.__shadowinit()
 
     def __shadowinit(self):
