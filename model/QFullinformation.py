@@ -52,16 +52,22 @@ class QFullinformation(QtWidgets.QWidget):
         font.setFamily('Arial Black')
         self.name_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.name_label.setText("QAQ")
+        self.name_label.setObjectName("Name_Lable")
         self.name_label.setStyleSheet("""
-        font-size: 20px;
-        color: gray;
+        #Name_Lable {
+            font-size: 20px;
+            color: #606060;
+        }
         """)
         self.name_label.setFont(font)
         self.uuid_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.uuid_label.setText(f"UUID: {self.__uuid}")
+        self.uuid_label.setObjectName("UUID_Lable")
         self.uuid_label.setStyleSheet("""
-        font-size: 10px;
-        color: gray;
+        #UUID_Lable {
+            font-size: 10px;
+            color: #606060;
+        }
         """)
         self.bottom_layout.addWidget(self.name_label,
                                      alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
@@ -71,6 +77,3 @@ class QFullinformation(QtWidgets.QWidget):
     def setuuid(self, uuid:str=None):
         self.__uuid = uuid
         self.uuid_label.update()
-
-    def enterEvent(self, event):
-        pass

@@ -24,6 +24,10 @@ class MainFrame(FramelessWindow):
         self.MainLayout.addLayout(self.Leftlayout)
         self.VLayout.addLayout(self.MainLayout)
 
+        # set LeftLayout
+        self.Leftlayout.setSpacing(20)
+        self.Leftlayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
+
         # Navigation layout setup with spacer items and navigation bar
         self.navigationlayout = QtWidgets.QHBoxLayout()
         self.navigationlayout.setSpacing(15)
