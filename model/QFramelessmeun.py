@@ -1,5 +1,6 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtCore import QVariantAnimation, pyqtSlot, QVariant, QAbstractAnimation
+from PyQt6.QtGui import QIcon, QPixmap, QTransform
 
 
 class __Struct:
@@ -9,30 +10,21 @@ class __Struct:
         self.__ipv4 = ipv4
         self.__ipv6 = ipv6
 
-class QFramelessmeun(QtWidgets.QWidget):
+
+class QTitlebar(QtWidgets.QWidget):
     def __init__(self, parent=None, title:str=None):
         super().__init__(parent=parent)
         self.__title = title
-        self.__list = []
+        self.__angle = [0, 180]
 
-        self.Vlayout = QtWidgets.QVBoxLayout(self)
-        self.__topbar = QtWidgets.QWidget(self)
-        self.topbarHlay = QtWidgets.QHBoxLayout(self.__topbar)
-
-        self.titleLable = QtWidgets.QLabel(self.__topbar)
-        self.iconlable = QtWidgets.QLabel(self.__topbar)
+        self.resize(250, 40)
+        self.topbarHlay = QtWidgets.QHBoxLayout(self)
+        self.titleLable = QtWidgets.QLabel(self)
+        self.iconlable = QtWidgets.QLabel(self)
         self.iconpixmap = QPixmap()
         self.ui_init()
 
     def ui_init(self):
-        self.resize(250, 250)
-        self.setMinimumSize(250, 250)
-        self.setMaximumSize(250, 250)
-        self.setSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
-
-        self.__topbar.resize(250, 40)
-        self.Vlayout.addWidget(self.__topbar, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
-
         self.topbarHlay.addWidget(self.titleLable, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         font = QtGui.QFont()
         font.setFamily('Arial Black')
@@ -53,11 +45,40 @@ class QFramelessmeun(QtWidgets.QWidget):
         self.iconlable.setScaledContents(True)
         self.topbarHlay.addWidget(self.iconlable, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
-    def settitleicon(self):
-        pass
+    def mousePressEvent(self, a0):
+        animation = QVariantAnimation(self.iconlable)
+        animation.setDuration(300)
+        animation.setStartValue(self.__angle[0])
+        animation.setEndValue(self.__angle[1])
+        animation.valueChanged.connect(self.angle)
+        animation.start()
 
-    def add(self):
-        pass
+    @pyqtSlot(QVariant)
+    def angle(self, value: float) -> None:
+        self.__angle[0] = value
+        self.__angle[1] = value+180
+        trans = QTransform()
+        trans.rotate(value)
+        self.iconlable.setPixmap(self.iconpixmap.transformed(trans))
+
+class QFramelessmeun(QtWidgets.QWidget):
+    def __init__(self, parent=None, title:str=None):
+        super().__init__(parent=parent)
+        self.__title = title
+        self.__list = []
+
+        self.Vlayout = QtWidgets.QVBoxLayout(self)
+        self.__topbar = QTitlebar(parent=self, title=self.__title)
+        self.ui_init()
+
+    def ui_init(self):
+        self.resize(250, 250)
+        self.setMinimumSize(250, 250)
+        self.setMaximumSize(250, 250)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
+
+        self.__topbar.resize(250, 40)
+        self.Vlayout.addWidget(self.__topbar, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
 
     def getlen(self) -> int:
         return len(self.__list)
