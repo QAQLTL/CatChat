@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QPixmap
 
 
 class __Struct:
@@ -21,6 +21,7 @@ class QFramelessmeun(QtWidgets.QWidget):
 
         self.titleLable = QtWidgets.QLabel(self.__topbar)
         self.iconlable = QtWidgets.QLabel(self.__topbar)
+        self.iconpixmap = QPixmap()
         self.ui_init()
 
     def ui_init(self):
@@ -45,8 +46,12 @@ class QFramelessmeun(QtWidgets.QWidget):
         }
         """)
         self.titleLable.setFont(font)
-
-        self.iconlable
+        self.iconlable.setFixedSize(15, 15)
+        self.iconlable.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.iconpixmap.load("D:/python/CatChat/res/down.png")
+        self.iconlable.setPixmap(self.iconpixmap)
+        self.iconlable.setScaledContents(True)
+        self.topbarHlay.addWidget(self.iconlable, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
     def settitleicon(self):
         pass
