@@ -1,9 +1,12 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from PyQt6.QtCore import QPropertyAnimation, pyqtProperty, QAbstractAnimation, QVariantAnimation
+from PyQt6.QtCore import QAbstractAnimation, QVariantAnimation, pyqtSignal, pyqtSlot
 from PyQt6.QtGui import QPixmap, QTransform
+from PyQt6.QtWidgets import QListWidget
 
 
 class QTitlebar(QtWidgets.QWidget):
+    titlebar_signal = pyqtSignal(str)
+
     def __init__(self, parent=None, title: str = None):
         super().__init__(parent=parent)
         self.__title = title
@@ -72,13 +75,16 @@ class QFramelessmenu(QtWidgets.QWidget):
 
         self.Vlayout = QtWidgets.QVBoxLayout(self)
         self.__topbar = QTitlebar(parent=self, title=self.__title)
+        self.__listview = QListWidget(self)
         self.ui_init()
 
     def ui_init(self):
         self.resize(250, 250)
         self.setMinimumSize(250, 250)
-        self.setMaximumSize(250, 250)
+        self.setMaximumSize(250, 800)
         self.setSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
 
-        self.__topbar.resize(250, 40)
         self.Vlayout.addWidget(self.__topbar, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
+
+        self.__listview.resize(200, 800)
+        self.Vlayout.addWidget(self.__listview, alignment=QtCore.Qt.AlignmentFlag.AlignBottom)
