@@ -2,7 +2,7 @@ from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QGraphicsDropShadowEffect, QVBoxLayout
 from qframelesswindow import StandardTitleBar
 
-from model import QFullinformation, QFramelessmeun
+from model import QFullinformation, QFramelessmenu
 from view import MainFrame
 
 class MainV(MainFrame):
@@ -10,7 +10,7 @@ class MainV(MainFrame):
         super().__init__()
         self.setTitleBar(StandardTitleBar(self))
         self.fullinformat = QFullinformation(self)
-        self.meun = QFramelessmeun(parent=self, title="Strange Zone")
+        self.meun = QFramelessmenu(parent=self, title="Strange Zone")
         self.Leftlayout.addWidget(self.fullinformat)
         self.Leftlayout.addWidget(self.meun)
         self.__shadowinit()
