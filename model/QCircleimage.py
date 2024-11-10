@@ -44,7 +44,7 @@ class QCircleimage(QLabel):
 
     def setborder(self):
         self.setStyleSheet(f"""
-        border: 3px Solid {self.__state};
-        border-radius: 50%;
+        border: 2px Solid {self.__state};
+        border-radius: 27%;
         padding: 1px 1px 1px 1px;
         """)
