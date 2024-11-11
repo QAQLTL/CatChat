@@ -1,5 +1,7 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QLabel, QVBoxLayout
+
+from .QChangeButton import QChangeButton
 
 class QFullinformation(QtWidgets.QWidget):
     def __init__(self, parent=None, uuid:str=None):
@@ -13,6 +15,20 @@ class QFullinformation(QtWidgets.QWidget):
         # information 內容設置
         self.name_label = QLabel(self.bottom_widget)
         self.uuid_label = QLabel(self.bottom_widget)
+
+        # share Button
+        self.share_widget = QtWidgets.QWidget(self)
+        self.share_layout = QVBoxLayout(self.share_widget)
+        self.share_widget.setObjectName("Share_widget")
+        self.share_widget.setStyleSheet("""
+        #Share_widget {
+            background-color: rgba(255, 255, 255, 240);
+            border-radius: 20%;
+        }
+        """)
+        self.share_button = QChangeButton(self.share_widget, "D:/python/CatChat/res/share.png")
+        self.share_layout.addWidget(self.share_button, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.share_widget.setFixedSize(40, 40)
 
         # 設置固定大小
         self.resize(250, 250)
@@ -44,6 +60,7 @@ class QFullinformation(QtWidgets.QWidget):
            border-radius: 15px;
         }
         """)
+        self.informat_vlayout.addWidget(self.share_widget, alignment=QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignRight)
         self.informat_vlayout.addWidget(self.bottom_widget, alignment=QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
         self.bottom_widget.setContentsMargins(0, 0, 0, 0)
 
@@ -68,10 +85,12 @@ class QFullinformation(QtWidgets.QWidget):
             color: #606060;
         }
         """)
+
         self.bottom_layout.addWidget(self.name_label,
                                      alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.bottom_layout.addWidget(self.uuid_label,
                                      alignment=QtCore.Qt.AlignmentFlag.AlignBottom | QtCore.Qt.AlignmentFlag.AlignHCenter)
+
 
     def setuuid(self, uuid:str=None):
         self.__uuid = uuid

@@ -1,13 +1,10 @@
-from multiprocessing.process import parent_process
-
 from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtCore import QAbstractAnimation, QVariantAnimation, pyqtSignal, QSize, QEasingCurve
-from PyQt6.QtGui import QPixmap, QTransform, QIcon
-from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, \
-    QGraphicsRotation
+from PyQt6.QtGui import QPixmap, QTransform, QIcon, QColor
+from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
 
+from .QChangeButton import QChangeButton
 from .QCircleimage import QCircleimage
-
 
 class __Struct:
     def __int__(self, name:str=None, avatar:str=None, ipv4:str=None, ipv6:str=None):
@@ -15,54 +12,6 @@ class __Struct:
         self.__avatar = avatar
         self.__ipv4 = ipv4
         self.__ipv6 = ipv6
-
-class ChangeButton(QPushButton):
-    def __init__(self, parent):
-        super().__init__(parent=parent)
-        self.setFixedSize(25, 25)
-        self.setObjectName("add_button")
-        self.setStyleSheet("""
-        #add_button {
-           border: none;
-        }
-        """)
-        self.setIconSize(QSize(15, 15))
-        self.iconpixmap = QPixmap("D:/python/CatChat/res/add-user.png")
-        self.new_iconpixmap = QPixmap("D:/python/CatChat/res/delete.png")  # 加載新的圖標
-        self.is_rotated = False                    # 記錄圖標是否已更換
-        self.setIcon(QIcon(self.iconpixmap))
-        # 設置動畫
-        self.animation = QVariantAnimation(self)
-        self.animation.setEasingCurve(QEasingCurve.Type.InQuad)
-        self.animation.setDuration(600)  # 動畫時長 500 毫秒
-        self.animation.setStartValue(0)
-        self.animation.setEndValue(180)
-        self.animation.valueChanged.connect(self.update_icon)
-        self.animation.finished.connect(self.switch_icon)  # 動畫結束後切換圖標
-
-        # 點擊時觸發旋轉動畫
-        self.clicked.connect(self.start_rotation)
-
-    def start_rotation(self):
-        # 如果動畫正在運行則忽略點擊
-        if self.animation.state() == QAbstractAnimation.State.Running:
-            return
-        # 啟動動畫
-        self.animation.start()
-
-    def update_icon(self, angle):
-        # 根據動畫值旋轉圖標並更新按鈕顯示
-        trans = QTransform().rotate(angle)
-        pixmap_to_rotate = self.new_iconpixmap if self.is_rotated else self.iconpixmap
-        rotated_pixmap = pixmap_to_rotate.transformed(trans)
-        self.setIcon(QtGui.QIcon(rotated_pixmap))
-
-    def switch_icon(self):
-        # 切換圖標狀態
-        self.is_rotated = not self.is_rotated
-        # 在動畫結束後顯示新圖標
-        final_pixmap = self.new_iconpixmap if self.is_rotated else self.iconpixmap
-        self.setIcon(QtGui.QIcon(final_pixmap))
 
 class CustomQListWidgetItem(QListWidgetItem):
     def __init__(self, parent, name:str, avatar:str, uuid:str):
@@ -76,14 +25,17 @@ class CustomQListWidgetItem(QListWidgetItem):
         self.Vlayout = QVBoxLayout(self.widget)
         self.name_label = QLabel(self.widget)
         self.uuid_label = QLabel(self.widget)
-        self.Cimg = QCircleimage()
-        self.add_button = ChangeButton(self.widget)
+        self.Cimg = QCircleimage(self.widget)
+        self.button = QChangeButton(self.widget, "D:/python/CatChat/res/add-user.png",
+                                    "D:/python/CatChat/res/delete.png")
+
+        self.widget.mousePressEvent = self.handle_widget_click
 
         self.ui_init()
 
     def ui_init(self):
-        self.Hlayout.setSpacing(20)
-        self.Hlayout.setContentsMargins(20, 0, 20, 0)  # 移除內邊距
+        self.Hlayout.setSpacing(15)
+        self.Hlayout.setContentsMargins(15, 0, 20, 0)  # 移除內邊距
 
         self.Vlayout.setSpacing(0)
         self.Vlayout.setContentsMargins(0, 10, 0, 10)  # 移除內邊距
@@ -121,7 +73,11 @@ class CustomQListWidgetItem(QListWidgetItem):
         self.Hlayout.addLayout(self.Vlayout)
         self.Vlayout.addWidget(self.name_label, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         self.Vlayout.addWidget(self.uuid_label, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
-        self.Hlayout.addWidget(self.add_button, 1, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+        self.Hlayout.addWidget(self.button, 1, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+
+    def handle_widget_click(self, event):
+        """處理 widget 點擊事件，並觸發按鈕旋轉動畫。"""
+        self.button.start_rotation()
 
 class QTitlebar(QtWidgets.QWidget):
     titlebar_signal = pyqtSignal(str)
@@ -192,12 +148,13 @@ class QTitlebar(QtWidgets.QWidget):
 class QListview(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.setMinimumHeight(400)
-
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.ui_init()
 
     def ui_init(self):
         self.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.setSpacing(2)
 
         self.setObjectName("ListW")
         self.setStyleSheet("""
@@ -224,19 +181,19 @@ class QFramelessmenu(QtWidgets.QWidget):
         self.Vlayout = QtWidgets.QVBoxLayout(self)
         self.__topbar = QTitlebar(parent=self, title=self.__title)
         self.__listview = QListview(self)
-        self.cl = CustomQListWidgetItem(self.__listview, "QAQ", "D:/python/CatChat/res/avatar.jpg", "204104")
-        self.__listview.setItemWidget(self.cl, self.cl.widget)
+        for i in range(0, 10):
+            self.cl = CustomQListWidgetItem(self.__listview, "QAQ", "D:/python/CatChat/res/avatar.jpg", "204104")
+            self.__listview.setItemWidget(self.cl, self.cl.widget)
         self.ui_init()
 
     def ui_init(self):
-        self.resize(250, 300)
-        self.setMinimumSize(250, 300)
-        self.setMaximumSize(250, 300)
+        self.resize(250, 350)
+        self.setMinimumSize(250, 350)
+        self.setMaximumSize(250, 350)
         self.setSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
 
         self.Vlayout.setSpacing(0)
         self.Vlayout.setContentsMargins(0,0,0,0)
-
 
         self.Vlayout.addWidget(self.__topbar, 0, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
         self.Vlayout.addWidget(self.__listview, 1, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
