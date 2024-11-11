@@ -1,7 +1,6 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtWidgets import QLabel
 
-
 class QFullinformation(QtWidgets.QWidget):
     def __init__(self, parent=None, uuid:str=None):
         super().__init__(parent)
