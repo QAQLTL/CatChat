@@ -79,12 +79,11 @@ class CustomQListWidgetItem(QListWidgetItem):
         self.Cimg = QCircleimage()
         self.add_button = ChangeButton(self.widget)
 
-        self.widget_state()
         self.ui_init()
 
     def ui_init(self):
-        self.Hlayout.setSpacing(10)
-        self.Hlayout.setContentsMargins(15, 0, 35, 0)  # 移除內邊距
+        self.Hlayout.setSpacing(20)
+        self.Hlayout.setContentsMargins(20, 0, 20, 0)  # 移除內邊距
 
         self.Vlayout.setSpacing(0)
         self.Vlayout.setContentsMargins(0, 10, 0, 10)  # 移除內邊距
@@ -120,17 +119,9 @@ class CustomQListWidgetItem(QListWidgetItem):
 
         self.Hlayout.addWidget(self.Cimg, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         self.Hlayout.addLayout(self.Vlayout)
-        self.Vlayout.addWidget(self.name_label, 1, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
-        self.Vlayout.addWidget(self.uuid_label, 1, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.Vlayout.addWidget(self.name_label, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.Vlayout.addWidget(self.uuid_label, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         self.Hlayout.addWidget(self.add_button, 1, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-
-    def widget_state(self):
-        self.widget.setStyleSheet("""
-        #mainwidget {
-           border-left: 2px solid #00EC00;
-           border-radius: 10%;
-        }
-        """)
 
 class QTitlebar(QtWidgets.QWidget):
     titlebar_signal = pyqtSignal(str)
@@ -231,7 +222,6 @@ class QFramelessmenu(QtWidgets.QWidget):
         self.__datalist = []
 
         self.Vlayout = QtWidgets.QVBoxLayout(self)
-        self.listViewlayout = QVBoxLayout(self)
         self.__topbar = QTitlebar(parent=self, title=self.__title)
         self.__listview = QListview(self)
         self.cl = CustomQListWidgetItem(self.__listview, "QAQ", "D:/python/CatChat/res/avatar.jpg", "204104")
@@ -247,10 +237,6 @@ class QFramelessmenu(QtWidgets.QWidget):
         self.Vlayout.setSpacing(0)
         self.Vlayout.setContentsMargins(0,0,0,0)
 
-        self.listViewlayout.setSpacing(0)
-        self.listViewlayout.setContentsMargins(15, 0, 0, 0)
 
         self.Vlayout.addWidget(self.__topbar, 0, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
-        self.Vlayout.addLayout(self.listViewlayout)
-
-        self.listViewlayout.addWidget(self.__listview, 1, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
+        self.Vlayout.addWidget(self.__listview, 1, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
