@@ -68,7 +68,7 @@ class QFullinformation(QtWidgets.QWidget):
         self.name_label.setStyleSheet("""
         #Name_Lable {
             font-size: 20px;
-            color: #606060;
+            color: rgb(99,102,102);
         }
         """)
         self.name_label.setFont(font)
@@ -78,7 +78,7 @@ class QFullinformation(QtWidgets.QWidget):
         self.uuid_label.setStyleSheet("""
         #UUID_Lable {
             font-size: 10px;
-            color: #606060;
+            color: rgb(99,102,102);
         }
         """)
 

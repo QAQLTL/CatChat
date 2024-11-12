@@ -35,7 +35,7 @@ class CustomQListWidgetItem(QListWidgetItem):
 
     def ui_init(self):
         self.Hlayout.setSpacing(15)
-        self.Hlayout.setContentsMargins(15, 0, 20, 0)  # 移除內邊距
+        self.Hlayout.setContentsMargins(10, 0, 20, 0)  # 移除內邊距
 
         self.Vlayout.setSpacing(0)
         self.Vlayout.setContentsMargins(0, 10, 0, 10)  # 移除內邊距
@@ -55,7 +55,7 @@ class CustomQListWidgetItem(QListWidgetItem):
         self.name_label.setStyleSheet("""
         #Name_Lable {
             font-size: 14px;
-            color: #606060;
+            color: rgb(99,102,102);
         }
         """)
         self.name_label.setFont(font)
@@ -65,7 +65,7 @@ class CustomQListWidgetItem(QListWidgetItem):
         self.uuid_label.setStyleSheet("""
         #UUID_Lable {
             font-size: 10px;
-            color: #606060;
+            color: rgb(99,102,102);
         }
         """)
 
@@ -113,7 +113,7 @@ class QTitlebar(QtWidgets.QWidget):
         self.titleLable.setStyleSheet("""
         #Title_Lable {
            font-size: 14px;
-           color: #606060;
+           color: rgb(99,102,102);
         }
         """)
         self.titleLable.setFont(font)
@@ -154,13 +154,14 @@ class QListview(QListWidget):
 
     def ui_init(self):
         self.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
-        self.setSpacing(2)
+        self.setSpacing(1)
 
         self.setObjectName("ListW")
         self.setStyleSheet("""
         #ListW {
-            background-color: None;
+            background-color: rgb(242,242,242);
             border: none;
+            outline: 0px;
         }
         QListWidget::item {
             background-color: transparent;
