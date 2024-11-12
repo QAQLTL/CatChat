@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from PyQt6.QtWidgets import QLabel, QVBoxLayout
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QHBoxLayout
 
 from .QChangeButton import QChangeButton
 
@@ -17,18 +17,14 @@ class QFullinformation(QtWidgets.QWidget):
         self.uuid_label = QLabel(self.bottom_widget)
 
         # share Button
-        self.share_widget = QtWidgets.QWidget(self)
-        self.share_layout = QVBoxLayout(self.share_widget)
-        self.share_widget.setObjectName("Share_widget")
-        self.share_widget.setStyleSheet("""
-        #Share_widget {
-            background-color: rgba(255, 255, 255, 240);
-            border-radius: 20%;
+        self.share_button = QChangeButton(self, "D:/python/CatChat/res/share.png")
+        self.share_button.setStyleSheet("""
+        QPushButton {
+            background-color: rgba(255, 255, 255, 245);
+            border-radius: 17%;
         }
         """)
-        self.share_button = QChangeButton(self.share_widget, "D:/python/CatChat/res/share.png")
-        self.share_layout.addWidget(self.share_button, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.share_widget.setFixedSize(40, 40)
+        self.share_button.setFixedSize(35, 35)
 
         # 設置固定大小
         self.resize(250, 250)
@@ -56,11 +52,11 @@ class QFullinformation(QtWidgets.QWidget):
         self.bottom_widget.setObjectName("Bottm_Widget")
         self.bottom_widget.setStyleSheet("""
         #Bottm_Widget {
-           background:rgba(255, 255, 255, 240);
+           background: rgba(255, 255, 255, 245);
            border-radius: 15px;
         }
         """)
-        self.informat_vlayout.addWidget(self.share_widget, alignment=QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignRight)
+        self.informat_vlayout.addWidget(self.share_button, alignment=QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignRight)
         self.informat_vlayout.addWidget(self.bottom_widget, alignment=QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
         self.bottom_widget.setContentsMargins(0, 0, 0, 0)
 

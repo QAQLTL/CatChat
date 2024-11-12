@@ -13,7 +13,6 @@ class MainV(MainFrame):
         self.meun = QFramelessmenu(parent=self, title="Strange Zone")
         self.Leftlayout.addWidget(self.fullinformat)
         self.Leftlayout.addWidget(self.meun)
-        self.__shadowinit()
 
     def __shadowinit(self):
         shadow = QGraphicsDropShadowEffect(self)
@@ -21,4 +20,3 @@ class MainV(MainFrame):
         shadow.setYOffset(4)
         shadow.setBlurRadius(10)
         shadow.setColor(QColor(0, 0, 0, 64))
-        self.navigationbar.setGraphicsEffect(shadow)

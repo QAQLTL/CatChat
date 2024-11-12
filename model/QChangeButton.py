@@ -8,14 +8,14 @@ class QChangeButton(QPushButton):
         super().__init__(parent=parent)
         self.__icon = icon
         self.__finish = finishicon
-        self.setFixedSize(25, 25)
-        self.setObjectName("add_button")
+        self.__iconh = 25
+        self.__iconw = 25
+        self.setFixedSize(self.__iconw, self.__iconh)
         self.setStyleSheet("""
-        #add_button {
+        QPushButton {
            border: none;
         }
         """)
-        self.setIconSize(QSize(15, 15))
         self.iconpixmap = QPixmap(self.__icon)
         self.new_iconpixmap = QPixmap(self.__finish)  # 加載新的圖標
         self.is_rotated = False                    # 記錄圖標是否已更換
@@ -52,3 +52,8 @@ class QChangeButton(QPushButton):
         # 在動畫結束後顯示新圖標
         final_pixmap = self.new_iconpixmap if self.is_rotated else self.iconpixmap
         self.setIcon(QtGui.QIcon(final_pixmap))
+
+    def set_iconsize(self, h, w):
+        self.__iconw = w
+        self.__iconh = h
+        self.update()

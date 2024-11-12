@@ -10,7 +10,7 @@ class MainFrame(FramelessWindow):
         # self.setFixedSize(1200, 700)
         # Set size policy and stylesheet in one step
         self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.setStyleSheet("#MainUI { background-color: rgb(255, 255, 255); }")
+        self.setStyleSheet("#MainUI { background-color: rgb(242,242,242); }")
 
         # Main layout setup
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
@@ -28,24 +28,7 @@ class MainFrame(FramelessWindow):
         self.Leftlayout.setSpacing(20)
         self.Leftlayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
 
-        # Navigation layout setup with spacer items and navigation bar
-        self.navigationlayout = QtWidgets.QHBoxLayout()
-        self.navigationlayout.setSpacing(15)
-        self.navigationlayout.addItem(QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
-                                                            QtWidgets.QSizePolicy.Policy.Minimum))
-
-        # Navigation bar setup
-        self.navigationbar = QtWidgets.QWidget(self)
-        self.navigationbar.setSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
-        self.navigationbar.setFixedSize(400, 40)
-        self.navigationbar.setStyleSheet("QWidget { background-color: rgb(255, 255, 255); border-radius: 20px; border: 1px solid #E0E0E0}")
-
-        self.navigationlayout.addWidget(self.navigationbar, alignment=QtCore.Qt.AlignmentFlag.AlignBottom)
-        self.navigationlayout.addItem(QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
-                                                            QtWidgets.QSizePolicy.Policy.Minimum))
-
         # Add layouts to the main layout
-        self.VLayout.addLayout(self.navigationlayout)
         self.verticalLayout_2.addLayout(self.VLayout)
 
         self.retranslateUi()
