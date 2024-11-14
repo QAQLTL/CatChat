@@ -10,9 +10,14 @@ class MainV(MainFrame):
         super().__init__()
         self.setTitleBar(StandardTitleBar(self))
         self.fullinformat = QFullinformation(self)
-        self.meun = QFramelessmenu(parent=self, title="Strange Zone")
+        self.meun = QFramelessmenu(parent=self, title="Chat Zone")
         self.Leftlayout.addWidget(self.fullinformat)
         self.Leftlayout.addWidget(self.meun)
+        self.ui_init()
+
+    def ui_init(self):
+        self.titleBar.maxBtn.deleteLater()  # 移除最大化按钮
+        self.titleBar._isDoubleClickEnabled = False  # 禁用双击放大
 
     def __shadowinit(self):
         shadow = QGraphicsDropShadowEffect(self)

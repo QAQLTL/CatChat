@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from PyQt6.QtWidgets import QLabel, QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QLabel
 
 from .QChangeButton import QChangeButton
 
@@ -20,8 +20,8 @@ class QFullinformation(QtWidgets.QWidget):
         self.share_button = QChangeButton(self, "D:/python/CatChat/res/share.png")
         self.share_button.setStyleSheet("""
         QPushButton {
-            background-color: rgba(255, 255, 255, 245);
-            border-radius: 17%;
+            background-color: rgba(242, 242, 242, 235);
+            border-radius: 17px;
         }
         """)
         self.share_button.setFixedSize(35, 35)
@@ -36,7 +36,7 @@ class QFullinformation(QtWidgets.QWidget):
         # 使用樣式表來設置背景圖片和圓角效果
         self.setStyleSheet("""#information_Box {
             background-color: #BBFFFF;
-            border-radius: 20px;
+            border-radius: 25px;
             border-image: url('D:/python/CatChat/res/avatar.jpg');
             }""")
         self.setContentsMargins(0, 0, 0, 0)
@@ -52,33 +52,31 @@ class QFullinformation(QtWidgets.QWidget):
         self.bottom_widget.setObjectName("Bottm_Widget")
         self.bottom_widget.setStyleSheet("""
         #Bottm_Widget {
-           background: rgba(255, 255, 255, 245);
-           border-radius: 15px;
+           background: rgba(242, 242, 242, 235);
+           border-radius: 20px;
         }
         """)
         self.informat_vlayout.addWidget(self.share_button, alignment=QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignRight)
         self.informat_vlayout.addWidget(self.bottom_widget, alignment=QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
         self.bottom_widget.setContentsMargins(0, 0, 0, 0)
 
-        font = QtGui.QFont()
-        font.setFamily('Arial Black')
         self.name_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.name_label.setText("QAQ")
         self.name_label.setObjectName("Name_Lable")
         self.name_label.setStyleSheet("""
         #Name_Lable {
+            font-family: Arial Black;
             font-size: 20px;
-            color: rgb(99,102,102);
+            color: #594E3F;
         }
         """)
-        self.name_label.setFont(font)
         self.uuid_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.uuid_label.setText(f"UUID: {self.__uuid}")
         self.uuid_label.setObjectName("UUID_Lable")
         self.uuid_label.setStyleSheet("""
         #UUID_Lable {
             font-size: 10px;
-            color: rgb(99,102,102);
+            color: #594E3F;
         }
         """)
 
