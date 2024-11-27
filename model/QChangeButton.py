@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from PyQt6.QtCore import QAbstractAnimation, QVariantAnimation, QSize, QEasingCurve
+from PyQt6.QtCore import QAbstractAnimation, QVariantAnimation, QSize, QEasingCurve, QTimer
 from PyQt6.QtGui import QPixmap, QTransform, QIcon
 from PyQt6.QtWidgets import QPushButton
 
@@ -10,6 +10,7 @@ class QChangeButton(QPushButton):
         self.__finish = finishicon
         self.__iconh = 25
         self.__iconw = 25
+        self.__time = None
         self.setFixedSize(self.__iconw, self.__iconh)
         self.setStyleSheet("""
         QPushButton {
@@ -28,6 +29,11 @@ class QChangeButton(QPushButton):
         self.animation.setEndValue(180)
         self.animation.valueChanged.connect(self.update_icon)
         self.animation.finished.connect(self.switch_icon)  # 動畫結束後切換圖標
+
+        # Timer for switching back
+        self.reset_timer = QTimer(self)
+        self.reset_timer.setSingleShot(True)
+        self.reset_timer.timeout.connect(self.reset_icon)
 
         # 點擊時觸發旋轉動畫
         self.clicked.connect(self.start_rotation)
@@ -53,7 +59,21 @@ class QChangeButton(QPushButton):
         final_pixmap = self.new_iconpixmap if self.is_rotated else self.iconpixmap
         self.setIcon(QtGui.QIcon(final_pixmap))
 
+        # Start timer to reset icon after a delay if icon is rotated
+        if self.is_rotated and (self.__time != None):
+            self.reset_timer.start(self.__time)  # Delay in ms (e.g., 3000 ms = 3 seconds)
+
+    def set_time(self, time:int):
+        self.__time = time
+        self.update()
+
     def set_iconsize(self, h, w):
         self.__iconw = w
         self.__iconh = h
         self.update()
+
+    def reset_icon(self):
+        # Reset to the original icon if currently showing the rotated one
+        if self.is_rotated:
+            self.is_rotated = False
+            self.setIcon(QIcon(self.iconpixmap))

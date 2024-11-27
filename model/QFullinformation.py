@@ -17,7 +17,8 @@ class QFullinformation(QtWidgets.QWidget):
         self.uuid_label = QLabel(self.bottom_widget)
 
         # share Button
-        self.share_button = QChangeButton(self, "D:/python/CatChat/res/share.png")
+        self.share_button = QChangeButton(self, "D:/python/CatChat/res/share.png", "D:/python/CatChat/res/tick.png")
+        self.share_button.set_time(1000)
         self.share_button.setStyleSheet("""
         QPushButton {
             background-color: rgba(242, 242, 242, 235);

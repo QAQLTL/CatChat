@@ -1,7 +1,6 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from PyQt6.QtCore import QAbstractAnimation, QVariantAnimation, pyqtSignal, QSize, QEasingCurve
-from PyQt6.QtGui import QPixmap, QTransform, QIcon, QColor
-from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
+from PyQt6.QtCore import pyqtSignal, QSize
+from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QHBoxLayout, QLabel, QVBoxLayout
 
 from .QChangeButton import QChangeButton
 from .QCircleimage import QCircleimage
@@ -154,6 +153,7 @@ class QFramelessmenu(QtWidgets.QWidget):
         for i in range(0, 10):
             self.cl = CustomQListWidgetItem(self.__listview, "QAQ", "D:/python/CatChat/res/avatar.jpg", "204104")
             self.__listview.setItemWidget(self.cl, self.cl.widget)
+
         self.ui_init()
 
     def ui_init(self):
@@ -167,3 +167,6 @@ class QFramelessmenu(QtWidgets.QWidget):
 
         self.Vlayout.addWidget(self.__topbar, 0, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
         self.Vlayout.addWidget(self.__listview, 1, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
+
+    def setmeun_action(self, win):
+        self.__topbar.add_button.clicked.connect(win.show)

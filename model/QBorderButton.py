@@ -8,14 +8,15 @@ class QBorderButton(QtWidgets.QPushButton):
 
 
     def ui_init(self):
+        self.setObjectName("QBorderButton")
         self.setStyleSheet("""
-        QPushButton {
+        #QBorderButton {
             padding: 5px;
             font-size: 11px;
             font-family: Arial Black;
             color: #73624D;
             border: 1px solid #73624D;
-            border-radius: 13%;
+            border-radius: 13px;
         }
         """)
 

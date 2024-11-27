@@ -19,6 +19,7 @@ class MainFrame(FramelessWindow):
         # VLayout setup with MainLayout and navigation layout
         self.VLayout = QtWidgets.QVBoxLayout()
         self.Leftlayout = QtWidgets.QVBoxLayout()
+        self.Chatlayout = QtWidgets.QVBoxLayout()
         self.MainLayout = QtWidgets.QHBoxLayout()
         self.MainLayout.addLayout(self.Leftlayout)
         self.VLayout.addLayout(self.MainLayout)
