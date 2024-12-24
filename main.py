@@ -2,9 +2,9 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from controller import MainV
+from controller import InitV
 
-class Window(MainV):
+class Window(InitV):
     def __init__(self):
         super().__init__()
         qr = self.frameGeometry()
@@ -18,4 +18,3 @@ if __name__ == '__main__':
     w = Window()
     w.show()
     app.exec()
-

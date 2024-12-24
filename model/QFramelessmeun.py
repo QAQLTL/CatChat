@@ -2,7 +2,6 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtCore import pyqtSignal, QSize
 from PyQt6.QtWidgets import QListWidget, QListWidgetItem, QHBoxLayout, QLabel, QVBoxLayout
 
-from .QChangeButton import QChangeButton
 from .QCircleimage import QCircleimage
 from .QBorderButton import QBorderButton
 
@@ -26,16 +25,13 @@ class CustomQListWidgetItem(QListWidgetItem):
         self.name_label = QLabel(self.widget)
         self.uuid_label = QLabel(self.widget)
         self.Cimg = QCircleimage(self.widget)
-        self.button = QChangeButton(self.widget, "D:/python/CatChat/res/add-user.png",
-                                    "D:/python/CatChat/res/delete.png")
-
-        self.widget.mousePressEvent = self.handle_widget_click
 
         self.ui_init()
 
     def ui_init(self):
-        self.Hlayout.setSpacing(15)
-        self.Hlayout.setContentsMargins(10, 0, 20, 0)  # 移除內邊距
+
+        self.Hlayout.setSpacing(20)
+        self.Hlayout.setContentsMargins(10, 0, 10, 0)  # 移除內邊距
 
         self.Vlayout.setSpacing(0)
         self.Vlayout.setContentsMargins(0, 10, 0, 10)  # 移除內邊距
@@ -54,29 +50,25 @@ class CustomQListWidgetItem(QListWidgetItem):
         self.name_label.setStyleSheet("""
         #Name_Lable {
             font-size: 14px;
-            color: #594E3F;
+            color: #1E2022;
         }
         """)
         self.name_label.setFont(font)
         self.uuid_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
-        self.uuid_label.setText(f"UUID: {self.__uuid}")
+        self.uuid_label.setText(f"@{self.__uuid}")
         self.uuid_label.setObjectName("UUID_Lable")
         self.uuid_label.setStyleSheet("""
         #UUID_Lable {
             font-size: 10px;
-            color: #594E3F;
+            color: #52616B;
         }
         """)
 
+        self.Hlayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.Hlayout.addWidget(self.Cimg, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         self.Hlayout.addLayout(self.Vlayout)
         self.Vlayout.addWidget(self.name_label, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         self.Vlayout.addWidget(self.uuid_label, 0, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
-        self.Hlayout.addWidget(self.button, 1, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-
-    def handle_widget_click(self, event):
-        """處理 widget 點擊事件，並觸發按鈕旋轉動畫。"""
-        self.button.start_rotation()
 
 class QTitlebar(QtWidgets.QWidget):
     titlebar_signal = pyqtSignal(str)
@@ -91,7 +83,7 @@ class QTitlebar(QtWidgets.QWidget):
 
         self.topbarHlay = QtWidgets.QHBoxLayout(self)
         self.titleLable = QtWidgets.QLabel(self)
-        self.add_button = QBorderButton(self, "Add Chat")
+        self.add_button = QBorderButton(self, name="", sizew=16, sizeh=16)
 
         self.ui_init()
 
@@ -103,10 +95,12 @@ class QTitlebar(QtWidgets.QWidget):
         self.titleLable.setStyleSheet("""
         #Title_Lable {
            font-family: Arial Black;
-           font-size: 14px;
-           color: #73624D;
+           font-size: 16px;
+           color: #1E2022;
         }
         """)
+
+        self.add_button.seticon(iconpath="D:/python/CatChat/res/add.png")
 
         self.topbarHlay.addWidget(self.titleLable, 1,
                                   alignment=QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -122,12 +116,12 @@ class QListview(QListWidget):
 
     def ui_init(self):
         self.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
-        self.setSpacing(1)
+        self.setSpacing(2)
 
         self.setObjectName("ListW")
         self.setStyleSheet("""
         #ListW {
-            background-color: rgb(242,242,242);
+            background-color: transparent;
             border: none;
             outline: 0px;
         }
@@ -157,16 +151,15 @@ class QFramelessmenu(QtWidgets.QWidget):
         self.ui_init()
 
     def ui_init(self):
-        self.setFixedSize(250, 355)
         self.setMinimumSize(250, 355)
-        self.setMaximumSize(250, 355)
+        self.setMaximumSize(250, 359)
         self.setSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
 
         self.Vlayout.setSpacing(0)
         self.Vlayout.setContentsMargins(0,0,0,0)
 
         self.Vlayout.addWidget(self.__topbar, 0, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
-        self.Vlayout.addWidget(self.__listview, 1, alignment=QtCore.Qt.AlignmentFlag.AlignTop)
+        self.Vlayout.addWidget(self.__listview, 1)
 
     def setmeun_action(self, win):
         self.__topbar.add_button.clicked.connect(win.show)

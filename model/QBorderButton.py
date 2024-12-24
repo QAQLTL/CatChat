@@ -1,8 +1,10 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 
 class QBorderButton(QtWidgets.QPushButton):
-    def __init__(self, parent=None, name:str=None):
+    def __init__(self, parent=None, name:str=None, sizew:int=None, sizeh:int=None):
         super().__init__(parent=parent)
+        self.__sizew = sizew
+        self.__sizeh = sizeh
         self.__name = name
         self.ui_init()
 
@@ -12,13 +14,14 @@ class QBorderButton(QtWidgets.QPushButton):
         self.setStyleSheet("""
         #QBorderButton {
             padding: 5px;
-            font-size: 11px;
+            font-size: 18px;
             font-family: Arial Black;
-            color: #73624D;
-            border: 1px solid #73624D;
-            border-radius: 13px;
+            background-color: #52616B;
+            border-radius: 10px;
         }
         """)
-
         self.setText(self.__name)
 
+    def seticon(self, iconpath):
+        self.setIcon(QtGui.QIcon(iconpath))
+        self.setIconSize(QtCore.QSize(self.__sizew, self.__sizeh))

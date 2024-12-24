@@ -10,12 +10,10 @@ class QLineEditBar(QLineEdit):
         self.setStyleSheet("""
         QLineEdit {
            font-size: 13px;
-           background-color: #F2F2F2;
+           background-color: #F0F5F9;
            border-radius: 11px;
            padding: 5px 5px 5px 8px;
-           border: 1px solid #73624D;
+           border: 2px solid #52616B;
            color: #73624D;
         }
         """)
-
-        self.setPlaceholderText("UUID")
