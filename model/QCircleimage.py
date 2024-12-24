@@ -1,9 +1,11 @@
-from PyQt6.QtCore import Qt, QRect, QSize
-from PyQt6.QtGui import QPixmap, QPainter, QBitmap, QColor, QPen
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
 from PyQt6.QtWidgets import QLabel
 
 
 class QCircleimage(QLabel):
+    clicked = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.setFixedSize(100, 100)
@@ -48,3 +50,8 @@ class QCircleimage(QLabel):
         border-radius: 27%;
         padding: 1px 1px 1px 1px;
         """)
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == event.button().LeftButton:  # 判斷是否左鍵
+            self.clicked.emit()  # 觸發自訂信號
+        super().mousePressEvent(event)  # 繼續執行父類別的 mousePressEvent

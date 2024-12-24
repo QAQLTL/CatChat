@@ -40,7 +40,7 @@ class MainV(MainFrame):
 
         self.Leftlayout.addWidget(self.fullinformat, 0)
         self.Leftlayout.addWidget(self.meun, 0)
-        self.buttomlayout.addWidget(self.ipviewbox, 0, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.buttomlayout.addWidget(self.ipviewbox, 0, alignment=Qt.AlignmentFlag.AlignRight)
         self.buttomlayout.addWidget(self.settingbut, 0, alignment=Qt.AlignmentFlag.AlignRight)
 
         self.shadow_inforbox()
