@@ -5,7 +5,7 @@ from PyQt6.QtCore import QTimer
 class GradientShadowEffect(QGraphicsDropShadowEffect):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setBlurRadius(60)
+        self.setBlurRadius(50)
         self.setOffset(0, 0)  # 無偏移
 
         # 顏色漸變參數

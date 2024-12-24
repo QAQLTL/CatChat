@@ -18,6 +18,7 @@ class QBorderButton(QtWidgets.QPushButton):
             font-family: Arial Black;
             background-color: #52616B;
             border-radius: 10px;
+            color: #F0F5F9;
         }
         """)
         self.setText(self.__name)
