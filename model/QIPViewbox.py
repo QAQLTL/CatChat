@@ -32,7 +32,7 @@ class QIPViewbox(QWidget):
 
     def refresh_check_net(self):
         ip.getcurrip()
-        ipv4 = ip.getipv4()
+        ipv4 = ip.curripv4
         if ipv4 == "127.0.0.1":
             self.test_result = False
         elif ipv4 != "127.0.0.1":
@@ -46,7 +46,7 @@ class IPbutton(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("IPLabel")
-        self.setText(f"{ip.getipv4()}")
+        self.setText(f"{ip.curripv4}")
 
         self.ui_init()
 

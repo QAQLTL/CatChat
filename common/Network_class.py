@@ -4,9 +4,9 @@ from typing import List
 
 class IPclass:
     def __init__(self):
-        self.__curripv4:str = ""
-        self.__curripv6:str = ""
-        self.__serveriplist:List[str]
+        self.curripv4:str = ""
+        self.curripv6:str = ""
+        self.serveriplist:List[str]
         self.hostname = socket.gethostname()
 
         self.getcurrip()
@@ -29,14 +29,8 @@ class IPclass:
                 family, _, _, _, sockaddr = info
                 ip = sockaddr[0]
                 if family == socket.AF_INET:
-                    self.__curripv4 = ip
+                    self.curripv4 = ip
                 elif family == socket.AF_INET6:
-                    self.__curripv6 = ip
+                    self.curripv6 = ip
         except Exception as e:
             print(f"Error getting IP addresses: {e}")
-
-    def getipv4(self):
-        return self.__curripv4
-
-    def getipv6(self):
-        return self.__curripv6

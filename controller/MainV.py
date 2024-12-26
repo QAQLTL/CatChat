@@ -48,7 +48,7 @@ class MainV(MainFrame):
     def shadow_inforbox(self):
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(20)
-        shadow.setColor(QColor('#222222'))
+        shadow.setColor(QColor('#898989'))
         shadow.setOffset(0, 0)
 
         self.fullinformat.setGraphicsEffect(shadow)

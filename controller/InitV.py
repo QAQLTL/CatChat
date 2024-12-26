@@ -11,6 +11,8 @@ class InitV(QInitView):
         super().__init__()
         self.setTitleBar(StandardTitleBar(self))
         self.stackedwidget = StackedWidget()
+        self.welcomview = Welcome()
+        self.ifsview = InforSetting()
 
         self.ui_init()
 
@@ -18,11 +20,17 @@ class InitV(QInitView):
         self.titleBar.maxBtn.deleteLater()
         self.titleBar._isDoubleClickEnabled = False
 
-        welcomview = Welcome()
-        ifs_view = InforSetting()
-        self.stackedwidget.addWidget(welcomview)
-        self.stackedwidget.addWidget(ifs_view)
+        self.stackedwidget.addWidget(self.welcomview)
+        self.stackedwidget.addWidget(self.ifsview)
         self.Vlayout.addWidget(self.stackedwidget)
+
+        self.stackedwidget.currentChanged.connect(self.anime_start)
+
+    def anime_start(self, index):
+        if index == 1:
+            self.ifsview.nameedit.start_animation()
+        else:
+            self.ifsview.nameedit.end_animation()
 
 class Welcome(QLabel):
     def __init__(self, parent=None):
@@ -50,7 +58,7 @@ class InforSetting(QWidget):
 
         self.circleimage.clicked.connect(self.imageevent)
 
-        self.nameedit.setFixedSize(150, 30)
+        self.nameedit.setFixedHeight(30)
         self.nameedit.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.nameedit.setStyleSheet("""
         QLineEdit {
@@ -77,20 +85,25 @@ class InforSetting(QWidget):
 
         self.donebut.seticon("D:/python/CatChat/res/left-arrow.png")
 
-        self.circleimage.setGraphicsEffect(GradientShadowEffect())
-
         self.vlayout.setSpacing(5)
         self.vlayout.addWidget(self.circleimage, 1, alignment=Qt.AlignmentFlag.AlignCenter)
         self.vlayout.addWidget(self.nameedit, 1, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        self.vlayout.setContentsMargins(0, 70, 0, 70)
+        self.vlayout.setContentsMargins(0, 60, 0, 60)
 
         self.vmlayout.addLayout(self.vlayout)
         self.vmlayout.addWidget(self.donebut, 0, alignment=Qt.AlignmentFlag.AlignRight)
 
     def imageevent(self):
-        filePath, filterType = QFileDialog.getOpenFileNames()
-        if filePath:
-            self.circleimage.setimage(filePath[0])
+        dialog = QFileDialog()
+        dialog.setNameFilter("All images (*.png *.jpg)")
+        dialog.setFileMode(QFileDialog.FileMode.AnyFile)
+        dialogss = dialog.exec()
+        if dialogss:
+            filePath = dialog.selectedFiles()
+            if filePath:
+                self.circleimage.setimage(filePath[0])
+            else:
+                return
         else:
             return

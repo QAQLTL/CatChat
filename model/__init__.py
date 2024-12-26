@@ -5,4 +5,3 @@ from .QBorderButton import QBorderButton
 from .QIPViewbox import QIPViewbox
 from .QStackedWIdget import StackedWidget
 from .QLineEditBar import QLineEditBar
-from .QGradientShadowEffect import GradientShadowEffect
