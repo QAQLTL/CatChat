@@ -1,6 +1,8 @@
 import socket
 import requests
 from typing import List
+from Cryptodome.PublicKey import RSA
+
 
 class IPclass:
     def __init__(self):
@@ -34,3 +36,23 @@ class IPclass:
                     self.curripv6 = ip
         except Exception as e:
             print(f"Error getting IP addresses: {e}")
+
+
+class Sslclass:
+    def __init__(self):
+        self.key = RSA.generate(2048)
+        self.private:str = ""
+        self.public:str = ""
+
+        self.create_key()
+
+    def create_key(self):
+        self.private = self.key.export_key()
+        self.public = self.key.publickey().export_key()
+
+        with open("privateKey.pem", "wb") as f:
+            f.write(self.private)
+
+        with open("publicKey.pem", "wb") as f:
+            f.write(self.public)
+

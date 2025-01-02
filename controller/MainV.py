@@ -1,57 +1,54 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from qframelesswindow import StandardTitleBar
 
-from model import QFullinformation, QFramelessmenu, QIPViewbox, QBorderButton
-from view import MainFrame, QAddView
+from model import *
+from common import *
+from view import MainFrame
 
 class MainV(MainFrame):
     def __init__(self):
         super().__init__()
-        self.setTitleBar(StandardTitleBar(self))
-        self.ipviewbox = QIPViewbox(self)
-        self.fullinformat = QFullinformation(self)
-        self.meun = QFramelessmenu(parent=self, title="Chat")
-        self.settingbut = QBorderButton(self, sizeh=18, sizew=18)
+        self.personal_avatar = QCircleimage(self)
+        self.linespace = QFrame(self)
+        self.usermenu = QUserMeun()
 
-        self.add_view = QAddView()
+        self.settings = Config("Personal")
+        self.__avatar_path = self.settings.load_avatar_path()
+        self.__personal_name = self.settings.load_username()
+        self.__personal_ipv4 = self.settings.load_useripv4()
 
         self.ui_init()
 
     def ui_init(self):
-        parent_geometry = self.geometry()
-        child_x = parent_geometry.x() / 0.9
-        child_y = parent_geometry.y() / 0.9
-        self.titleBar.maxBtn.deleteLater()
-        self.titleBar._isDoubleClickEnabled = False
+        self.titleBar.hide()
+        self.setMinimumSize(0, 300)
+        self.setMaximumSize(0, 445)
 
-        self.meun.setmeun_action(self.add_view)
-        self.add_view.move(child_x, child_y)
+        self.personal_avatar.setimage(self.__avatar_path)
+        self.personal_avatar.setFixedSize(QSize(60, 60))
+        self.personal_avatar.clicked.connect(self.personal_avatar_event)
 
-        self.settingbut.seticon(iconpath="D:/python/CatChat/res/settings.png")
-        self.settingbut.setStyleSheet("""
-        #QBorderButton {
-            font-size: 18px;
-            font-family: Arial Black;
-            background-color: transparent;
-        }
-        """)
+        self.linespace.setFrameShape(QFrame.Shape.HLine)
+        self.linespace.setFrameShadow(QFrame.Shadow.Raised)
 
-        self.Leftlayout.addWidget(self.fullinformat, 0)
-        self.Leftlayout.addWidget(self.meun, 0)
-        self.buttomlayout.addWidget(self.ipviewbox, 0, alignment=Qt.AlignmentFlag.AlignRight)
-        self.buttomlayout.addWidget(self.settingbut, 0, alignment=Qt.AlignmentFlag.AlignRight)
+        self.VLayout.addWidget(self.personal_avatar, 0, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
+        self.VLayout.addWidget(self.linespace, 1)
+        self.VLayout.addWidget(self.usermenu, 1)
 
-        self.shadow_inforbox()
+        self.style()
 
-    def shadow_inforbox(self):
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(20)
-        shadow.setColor(QColor('#898989'))
-        shadow.setOffset(0, 0)
+    def style(self):
+        pass
 
-        self.fullinformat.setGraphicsEffect(shadow)
+    def personal_avatar_event(self):
+        if hasattr(self, "personal_widget") and self.personal_widget.isVisible():
+            self.personal_widget.hide()
+            return
 
-    def closeEvent(self, a0):
-        self.add_view.close()
+        self.personal_widget = QInformaWidget(self.personal_avatar)
+        self.personal_widget.personal_avatar.setimage(self.__avatar_path)
+        self.personal_widget.personal_name.setText(self.__personal_name)
+        self.personal_widget.personal_ipv4.setText(self.__personal_ipv4)
+
+        self.personal_widget.show()

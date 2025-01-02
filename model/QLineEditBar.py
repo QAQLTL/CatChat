@@ -20,7 +20,6 @@ class QLineEditBar(QLineEdit):
            color: #73624D;
         }
         """)
-        self.setFixedWidth(0)
 
     def start_animation(self):
         self.animate_width(self.width(), self.target_width)

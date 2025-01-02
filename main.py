@@ -2,9 +2,9 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from controller import InitV
+from controller import *
 
-class Window(InitV):
+class Window(MainV):
     def __init__(self):
         super().__init__()
         qr = self.frameGeometry()
