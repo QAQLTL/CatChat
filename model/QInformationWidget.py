@@ -8,31 +8,34 @@ class QInformaWidget(QPopupWidget):
     def __init__(self, parent=None):
         super().__init__()
         self.parent = parent
-        self.personal_avatar = QCircleimage(self)
+        self.personal_avatar = QAvatarWidget(self)
         self.personal_name = QLabel(self)
         self.personal_ipv4 = QLabel(self)
 
         self.personal_hlayout = QHBoxLayout()
         self.personal_right_vlayout = QVBoxLayout()
-        self.vlayout = QVBoxLayout(self)
+        self.vlayout = QVBoxLayout()
 
         self.ui_init()
 
     def ui_init(self):
-        parent_pos = self.parent.mapToGlobal(QPoint(0, 0))
-        self.move(parent_pos.x() + self.parent.width() + 15, parent_pos.y() - 10)
+        if self.parent:
+            parent_pos = self.parent.mapToGlobal(QPoint(0, 0))
+            self.move(parent_pos.x() + self.parent.width() + 15, parent_pos.y() - 10)
 
         self.personal_name.setObjectName("Name")
         self.personal_ipv4.setObjectName("Ipv4")
         self.personal_avatar.setFixedSize(QSize(60, 60))
 
         self.personal_hlayout.addWidget(self.personal_avatar)
-        self.personal_right_vlayout.addWidget(self.personal_name)
-        self.personal_right_vlayout.addWidget(self.personal_ipv4)
-        self.personal_hlayout.setSpacing(15)
+        self.personal_right_vlayout.addWidget(self.personal_name, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.personal_right_vlayout.addWidget(self.personal_ipv4, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.personal_hlayout.addLayout(self.personal_right_vlayout)
+        self.personal_right_vlayout.setContentsMargins(0, 10, 0, 10)
 
         self.vlayout.addLayout(self.personal_hlayout)
 
+        self.setLayout(self.vlayout)
         self.style()
 
     def style(self):
@@ -49,5 +52,6 @@ class QInformaWidget(QPopupWidget):
             color: #52616B;
         }
         """)
+
 
 

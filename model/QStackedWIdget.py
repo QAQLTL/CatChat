@@ -65,3 +65,8 @@ class StackedWidget(QStackedWidget):
 
         current_animation.start()
         target_animation.start()
+
+    def get_page_name(self, index: int) -> str:
+        """根據索引獲取頁面的名稱"""
+        page = self.widget(index)  # 根據索引獲取頁面
+        return page.objectName() if page else ""

@@ -6,17 +6,19 @@ from model import *
 from common import *
 from view import MainFrame
 
+ip = IPclass()
+
 class MainV(MainFrame):
     def __init__(self):
         super().__init__()
-        self.personal_avatar = QCircleimage(self)
+        self.personal_avatar = QAvatarWidget(self)
         self.linespace = QFrame(self)
         self.usermenu = QUserMeun()
 
         self.settings = Config("Personal")
         self.__avatar_path = self.settings.load_avatar_path()
         self.__personal_name = self.settings.load_username()
-        self.__personal_ipv4 = self.settings.load_useripv4()
+        self.__personal_ipv4 = self.settings.load_useripv4() or ip.curripv4
 
         self.ui_init()
 
@@ -24,6 +26,8 @@ class MainV(MainFrame):
         self.titleBar.hide()
         self.setMinimumSize(0, 300)
         self.setMaximumSize(0, 445)
+
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
 
         self.personal_avatar.setimage(self.__avatar_path)
         self.personal_avatar.setFixedSize(QSize(60, 60))

@@ -7,7 +7,7 @@ class MainFrame(FramelessWindow):
         self.setObjectName("MainUI")
         # self.setFixedSize(1200, 700)
         # Set size policy and stylesheet in one step
-        self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        # self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         self.setStyleSheet("#MainUI { background-color: #F0F5F9; }")
 
         # Main layout setup
