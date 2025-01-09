@@ -20,7 +20,6 @@ class BaseCustomWidget(QListWidgetItem):
     def get_widget(self):
         return self.widget
 
-
 class CustomAddWidget(BaseCustomWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -43,7 +42,6 @@ class CustomAddWidget(BaseCustomWidget):
         self.addwin.window_closed.connect(network.stop_listen)
         self.addwin.show()
         network.devices_updated.connect(self.addwin.update_items)
-
 
 class CustomWidget(BaseCustomWidget):
     def __init__(self, parent=None, image_path:str = None):

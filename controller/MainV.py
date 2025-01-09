@@ -20,6 +20,10 @@ class MainV(MainFrame):
         self.__personal_name = settings.load_username()
         self.__personal_ipv4 = settings.load_useripv4() or ip.curripv4
 
+        udp_server = UDPServer()
+        udp_server.set_callback(print)
+        udp_server.start_server()
+
         self.ui_init()
 
     def ui_init(self):
@@ -39,11 +43,6 @@ class MainV(MainFrame):
         self.VLayout.addWidget(self.personal_avatar, 0, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
         self.VLayout.addWidget(self.linespace, 1)
         self.VLayout.addWidget(self.usermenu, 1)
-
-        self.style()
-
-    def style(self):
-        pass
 
     def personal_avatar_event(self):
         if hasattr(self, "personal_widget") and self.personal_widget.isVisible():

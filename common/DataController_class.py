@@ -41,8 +41,8 @@ class User(Base):
     public_key = Column(String, nullable=True)
 
 class UserDataManager:
-    def __init__(self, db_name="usesrsdata"):
-        datac.base_path_create(datac.base_path+"/sql")
+    def __init__(self, db_name="usersdata"):
+        datac.base_path_create(datac.base_path + "/sql")
         self.engine = create_engine(f'sqlite:///data/sql/{db_name}.db')
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
@@ -59,8 +59,10 @@ class UserDataManager:
             )
             session.add(user)
             session.commit()
+            print(f"[INFO] User '{name}' successfully added.")
         except Exception as e:
             session.rollback()
+            print(f"[ERROR] Failed to add user '{name}': {e}")
             raise e
         finally:
             session.close()
@@ -70,9 +72,9 @@ class UserDataManager:
         try:
             users = session.query(User).all()
             if not users:
-                # 如果查詢結果為空，返回空列表或提示消息
-                print("No users found in the database.")
+                print("[WARNING] No users found in the database.")
                 return []
+            print(f"[INFO] Retrieved {len(users)} users from the database.")
             return [
                 {
                     "avatar_path": user.avatar_path,
@@ -91,7 +93,7 @@ class UserDataManager:
         try:
             user = session.query(User).filter_by(name=name).first()
             if not user:
-                raise ValueError(f"No user found with name: {name}")
+                raise ValueError(f"[WARNING] No user found with name: {name}")
             if avatar_path:
                 user.avatar_path = avatar_path
             if ipv4:
@@ -101,8 +103,13 @@ class UserDataManager:
             if public_key:
                 user.public_key = public_key
             session.commit()
+            print(f"[INFO] User '{name}' successfully updated.")
+        except ValueError as ve:
+            print(ve)
+            raise ve
         except Exception as e:
             session.rollback()
+            print(f"[ERROR] Failed to update user '{name}': {e}")
             raise e
         finally:
             session.close()
@@ -114,10 +121,15 @@ class UserDataManager:
             if user:
                 session.delete(user)
                 session.commit()
+                print(f"[INFO] User '{name}' successfully deleted.")
             else:
-                raise ValueError(f"No user found with name: {name}")
+                raise ValueError(f"[WARNING] No user found with name: {name}")
+        except ValueError as ve:
+            print(ve)
+            raise ve
         except Exception as e:
             session.rollback()
+            print(f"[ERROR] Failed to delete user '{name}': {e}")
             raise e
         finally:
             session.close()

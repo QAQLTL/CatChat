@@ -18,6 +18,7 @@ class AddUserWindow(QPopupWidget):
         self.searchbar = SearchApp()
         self.list_widget = QListWidget()
         self.vlayout = QVBoxLayout(self)
+        self.list_widget.currentItemChanged.connect(self.on_item_changed)
 
         self.ui_init()
 
@@ -36,6 +37,15 @@ class AddUserWindow(QPopupWidget):
 
         self.searchbar.search_bar.textChanged.connect(self.update_list)
         self.apply_list_widget_style()
+
+    def on_item_changed(self, current, previous):
+        if current:
+            selected_username = current.text()
+            selected_item = next((item for item in self.items if item["username"] == selected_username), None)
+            if selected_item:
+                UDPClient(selected_item['ip']).send_message('Hello')
+            else:
+                print(f"找不到 {selected_username} 的完整資料")
 
     def update_list(self):
         """更新列表，根據搜尋文字過濾和排序。"""

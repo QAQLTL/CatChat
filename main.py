@@ -24,14 +24,16 @@ class Window(InitV):
                 self.ui_chagne()
             else:
                 self.stackedwidget.addWidget(self.sslcryptoview)
-                if self.sslcryptoview.confirm_button.clicked and self.sslcryptoview.checked:
-                    self.uichagne_controller()
+                self.sslcryptoview.confirm_button.clicked.connect(self.handle_ssl_check)
         else:
             self.stackedwidget.addWidget(self.ifsview)
             self.sslcryptoview.confirm_button.clicked.connect(self.ui_chagne)
 
-    def uichagne_controller(self):
-        self.ui_chagne()
+    def handle_ssl_check(self):
+        if self.sslcryptoview.checked:
+            self.ui_chagne()
+        else:
+            print("密碼驗證失敗")
 
     def ui_chagne(self):
         try:

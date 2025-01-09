@@ -208,7 +208,6 @@ class ComputerInfor(QWidget):
         """)
 
 class SslCrypto(QWidget):
-    checked = pyqtSignal(bool)
     def __init__(self, parent=None):
         super().__init__(parent)
         self.main_layout = QVBoxLayout(self)
@@ -217,9 +216,10 @@ class SslCrypto(QWidget):
         self.confirm_button = QBorderButton(self, sizew=20, sizeh=20)
 
         self.key = None
+        self.checked = None
 
         self.ui_init()
-        self.apply_styles()
+        self.update_input_box_styles()
 
     def ui_init(self):
         self.setObjectName("SSl_page")
@@ -253,34 +253,41 @@ class SslCrypto(QWidget):
         password = ''.join(box.text() for box in self.input_boxes)
         if settings.load_ssl_crypto():
             key = KeyDecryptor()
-            if len(password) == 4 and password.isdigit():
+            if len(password) == 4:
                 if key.try_decrypt(password):
-                    self.checked.emit(True)
+                    self.checked = True
                 else:
-                    self.checked.emit(False)
+                    self.checked = False
             elif len(password) == 0:
-                self.checked.emit(False)
+                self.checked = False
         else:
-            if len(password) == 4 and password.isdigit():
+            if len(password) == 4:
                 sslcontroller.create_key(password)
                 settings.save_ssl_crypto(True)
             elif len(password) == 0:
                 sslcontroller.create_key()
                 settings.save_ssl_crypto(False)
 
-    def apply_styles(self):
-        self.setStyleSheet("""
-            QLineEdit {
+        self.update_input_box_styles()
+
+    def update_input_box_styles(self):
+        color = "#A7A7A7"  # 默認灰色
+        if self.checked is True:
+            color = "#90EE90"  # 淺綠色 (成功)
+        elif self.checked is False:
+            color = "#F08080"  # 淺紅色 (失敗)
+
+        for input_box in self.input_boxes:
+            input_box.setStyleSheet(f"""
                 font-size: 30px;
                 color: #A7A7A7;
                 background-color: transparent;
-                border: 1px solid #A7A7A7;
+                border: 2px solid {color};
                 border-radius: 5px;
                 padding: 15px 5px 15px 5px;
                 max-height: 70px;
                 max-width: 50px;
-            }
-        """)
+            """)
 
 class PasswordInputBox(QLineEdit):
     def __init__(self, index, parent=None):

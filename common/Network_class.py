@@ -11,6 +11,9 @@ import time
 import json
 
 from .DataController_class import DataController
+
+base_uuid = "123e4567-e89b-12d3-a456-426614174000"
+
 datacontroller = DataController()
 
 class IPclass:
@@ -69,7 +72,6 @@ class SslClass:
         self.public: str = ""
 
         self.path = os.path.join(datacontroller.base_path, "sslkey")
-
 
     def save_key(self, private_key: bytes, public_key: bytes):
         """
@@ -180,10 +182,10 @@ class NetCatCHAT(QObject):
         self.identifier = {
             "program": "CatCHAT",
             "version": "1.0",
-            "uuid": "123e4567-e89b-12d3-a456-426614174000",
+            "uuid": base_uuid,
             "username": None
         }
-        self.own_ip = self.get_own_ip()
+        self.own_ip = 'self.get_own_ip()'
         self.stop_listener = threading.Event()
         self.stop_broadcast = threading.Event()
         self.sender_thread = None
@@ -205,9 +207,13 @@ class NetCatCHAT(QObject):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP) as sender:
             sender.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
             message = json.dumps(self.identifier).encode('utf-8')
+            last_log_time = time.time()  # 用於限制日誌的頻率
             while not self.stop_broadcast.is_set():
                 sender.sendto(message, (self.BROADCAST_ADDR, self.BROADCAST_PORT))
-                print("[INFO] 廣播訊息已發送")
+                current_time = time.time()
+                if current_time - last_log_time >= 10:  # 每隔5秒記錄一次日誌
+                    print("[INFO] 廣播訊息已發送")
+                    last_log_time = current_time
                 time.sleep(1)
 
     def listen_for_responses(self):
@@ -221,6 +227,7 @@ class NetCatCHAT(QObject):
                 print(f"[ERROR] 無法綁定到埠 {self.BROADCAST_PORT}: {e}")
                 return
 
+            last_device_log_time = time.time()  # 控制日誌輸出的頻率
             while not self.stop_listener.is_set():
                 try:
                     listener.settimeout(1)
@@ -238,7 +245,10 @@ class NetCatCHAT(QObject):
                                     "last_seen": time.time()
                                 })
                             self.devices_updated.emit(self.found_devices)
-                            print(f"[INFO] 收到來自相同程式的電腦: {addr[0]} (用戶名: {message.get('username')})")
+                            current_time = time.time()
+                            if current_time - last_device_log_time >= 15:  # 每隔5秒記錄一次日誌
+                                print(f"[INFO] 收到來自相同程式的電腦: {addr[0]} (用戶名: {message.get('username')})")
+                                last_device_log_time = current_time
                     except (UnicodeDecodeError, json.JSONDecodeError):
                         print(f"[WARNING] 收到無法解碼的訊息，來自: {addr}")
                 except socket.timeout:
@@ -296,51 +306,89 @@ class NetCatCHAT(QObject):
         self.identifier["username"] = name
 
 class UDPServer:
-    def __init__(self, ip_class: IPclass, port: int = 12345):
-        self.ip_class = ip_class
+    def __init__(self, port: int = 12345):
+        self.ip_class = IPclass()
         self.port = port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sockets = []
         self.running = False
+        self.callback = None
+
+    def set_callback(self, callback):
+        """设置收到消息后的回调函数"""
+        self.callback = callback
 
     def start_server(self):
+        self.running = True
+        threading.Thread(target=self.run_server, daemon=True).start()
+
+    def run_server(self):
         try:
+            # IPv4 Socket
             ipv4 = self.ip_class.get_ipv4()
-            if not ipv4:
-                print("[ERROR] 無法取得 IPv4 地址。")
+            if ipv4:
+                ipv4_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                ipv4_socket.bind((ipv4, self.port))
+                self.sockets.append(ipv4_socket)
+                print(f"[INFO] 伺服器啟動於 [IPv4] {ipv4}:{self.port}")
+            # IPv6 Socket
+            ipv6 = self.ip_class.get_ipv6()
+            if ipv6:
+                ipv6_socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+                ipv6_socket.bind((ipv6, self.port, 0, 0))
+                self.sockets.append(ipv6_socket)
+                print(f"[INFO] 伺服器啟動於 [IPv6] {ipv6}:{self.port}")
+            if not self.sockets:
+                if self.callback:
+                    self.callback("[ERROR] 無法取得任何有效的 IP 地址。")
                 return
 
-            self.socket.bind((ipv4, self.port))
-            self.running = True
-            print(f"[INFO] 伺服器啟動於 {ipv4}:{self.port}")
-
             while self.running:
-                data, addr = self.socket.recvfrom(1024)
-                print(f"[INFO] 收到來自 {addr} 的訊息: {data.decode('utf-8')}")
+                for sock in self.sockets:
+                    sock.settimeout(1.0)
+                    try:
+                        data, addr = sock.recvfrom(1024)
+                        if self.callback:
+                            self.callback(f"[INFO] 收到來自 {addr} 的訊息: {data.decode('utf-8')}")
+                    except socket.timeout:
+                        continue
         except Exception as e:
-            print(f"[ERROR] 伺服器錯誤: {e}")
+            if self.callback:
+                self.callback(f"[ERROR] 伺服器錯誤: {e}")
         finally:
-            self.socket.close()
+            for sock in self.sockets:
+                sock.close()
 
     def stop_server(self):
         self.running = False
-        print("[INFO] 伺服器已停止。")
 
 class UDPClient:
-    def __init__(self, ip_class: IPclass, server_ip: str, server_port: int = 12345):
-        self.ip_class = ip_class
+    def __init__(self, server_ip: str, server_port: int = 12345, use_ipv6: bool = False):
+        self.ip_class = IPclass()
         self.server_ip = server_ip
         self.server_port = server_port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.use_ipv6 = use_ipv6
+        self.socket = socket.socket(
+            socket.AF_INET6 if use_ipv6 else socket.AF_INET, socket.SOCK_DGRAM
+        )
 
     def send_message(self, message: str):
         try:
-            ipv4 = self.ip_class.get_ipv4()
-            if not ipv4:
-                print("[ERROR] 無法取得 IPv4 地址。")
-                return
-
-            self.socket.sendto(message.encode('utf-8'), (self.server_ip, self.server_port))
-            print(f"[INFO] 訊息已發送到 {self.server_ip}:{self.server_port}: {message}")
+            if self.use_ipv6:
+                ipv6 = self.ip_class.get_ipv6()
+                if not ipv6:
+                    print("[ERROR] 無法取得 IPv6 地址。")
+                    return
+                self.socket.sendto(
+                    message.encode('utf-8'), (self.server_ip, self.server_port, 0, 0)
+                )
+                print(f"[INFO] 訊息已發送到 [IPv6] {self.server_ip}:{self.server_port}: {message}")
+            else:
+                ipv4 = self.ip_class.get_ipv4()
+                if not ipv4:
+                    print("[ERROR] 無法取得 IPv4 地址。")
+                    return
+                self.socket.sendto(message.encode('utf-8'), (self.server_ip, self.server_port))
+                print(f"[INFO] 訊息已發送到 [IPv4] {self.server_ip}:{self.server_port}: {message}")
         except Exception as e:
             print(f"[ERROR] 傳送訊息時發生錯誤: {e}")
         finally:
