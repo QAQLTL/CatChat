@@ -208,12 +208,15 @@ class ComputerInfor(QWidget):
         """)
 
 class SslCrypto(QWidget):
+    checked = pyqtSignal(bool)
     def __init__(self, parent=None):
         super().__init__(parent)
         self.main_layout = QVBoxLayout(self)
         self.box_layout = QHBoxLayout()
         self.input_boxes = []
         self.confirm_button = QBorderButton(self, sizew=20, sizeh=20)
+
+        self.key = None
 
         self.ui_init()
         self.apply_styles()
@@ -248,12 +251,22 @@ class SslCrypto(QWidget):
 
     def check_password(self):
         password = ''.join(box.text() for box in self.input_boxes)
-        if len(password) == 4 and password.isdigit():
-            sslcontroller.create_key(password)
-            settings.save_ssl_crypto(True)
-        elif len(password) == 0:
-            sslcontroller.create_key()
-            settings.save_ssl_crypto(False)
+        if settings.load_ssl_crypto():
+            key = KeyDecryptor()
+            if len(password) == 4 and password.isdigit():
+                if key.try_decrypt(password):
+                    self.checked.emit(True)
+                else:
+                    self.checked.emit(False)
+            elif len(password) == 0:
+                self.checked.emit(False)
+        else:
+            if len(password) == 4 and password.isdigit():
+                sslcontroller.create_key(password)
+                settings.save_ssl_crypto(True)
+            elif len(password) == 0:
+                sslcontroller.create_key()
+                settings.save_ssl_crypto(False)
 
     def apply_styles(self):
         self.setStyleSheet("""

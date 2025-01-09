@@ -5,11 +5,13 @@ from typing import List
 from Cryptodome.PublicKey import RSA
 from PyQt6.QtCore import *
 
+import traceback
 import threading
 import time
 import json
 
 from .DataController_class import DataController
+datacontroller = DataController()
 
 class IPclass:
     def __init__(self):
@@ -66,40 +68,104 @@ class SslClass:
         self.private: str = ""
         self.public: str = ""
 
-        self.datacontroller = DataController()
-        self.path = os.path.join(self.datacontroller.base_path, "sslkey")
+        self.path = os.path.join(datacontroller.base_path, "sslkey")
 
-    def save_key(self, private_key, public_key):
+
+    def save_key(self, private_key: bytes, public_key: bytes):
         """
-        将私钥和公钥保存到指定路径
+        保存私鑰和公鑰到文件。
+        :param private_key: 私鑰的字節數據。
+        :param public_key: 公鑰的字節數據。
         """
+        private_path = os.path.join(self.path, "private.pem")
+        public_path = os.path.join(self.path, "public.pem")
         try:
-            with open(f"{self.path}/privateKey.pem", "wb") as f:
-                f.write(private_key)
-            with open(f"{self.path}/publicKey.pem", "wb") as f:
-                f.write(public_key)
-            print("Keys successfully saved.")
+            with open(private_path, 'wb') as priv_file:
+                priv_file.write(private_key)
+            with open(public_path, 'wb') as pub_file:
+                pub_file.write(public_key)
+            print(f"[INFO] 密鑰已保存到 {private_path} 和 {public_path}")
         except Exception as e:
-            print(f"Error saving keys: {e}")
+            print(f"[ERROR] 保存密鑰時出現錯誤: {e}")
+            traceback.print_exc()
 
     def create_key(self, cryptocode: str = None):
-        self.datacontroller.base_path_create(self.path)
-        key = RSA.generate(2048)
+        """
+        生成 RSA 密鑰對，根據是否提供密碼來加密私鑰。
+        :param cryptocode: 用於加密私鑰的密碼（如果提供）。
+        :return: (私鑰, 公鑰) 的字節數據。
+        """
+        datacontroller.base_path_create(self.path)  # 確保目標目錄存在
+        try:
+            # 生成 2048 位的 RSA 密鑰
+            key = RSA.generate(2048)
 
-        if cryptocode:
-            try:
-                private = key.export_key(passphrase=cryptocode, pkcs=8, protection="scryptAndAES128-CBC")
-                public = key.publickey().export_key()
-                self.save_key(private, public)
-            except Exception as e:
-                print(f"Error generating encrypted keys: {e}")
-        else:
-            try:
-                private = key.export_key()
-                public = key.publickey().export_key()
-                self.save_key(private, public)
-            except Exception as e:
-                print(f"Error generating keys: {e}")
+            # 導出私鑰
+            if cryptocode:
+                private_key = key.export_key(passphrase=cryptocode, pkcs=8, protection="scryptAndAES128-CBC")
+            else:
+                private_key = key.export_key()
+
+            # 導出公鑰
+            public_key = key.publickey().export_key()
+
+            # 保存密鑰
+            self.save_key(private_key, public_key)
+
+            print("[INFO] 密鑰生成成功！")
+            return private_key, public_key
+        except Exception as e:
+            print(f"[ERROR] 生成密鑰時出現錯誤: {e}")
+            traceback.print_exc()
+            return None, None
+
+class KeyDecryptor:
+    def __init__(self):
+        """
+        初始化 KeyDecryptor 類。
+        :param encrypted_key_path: 加密私鑰文件的路徑。
+        """
+        self.key = None
+        self.path = os.path.join(datacontroller.base_path, "sslkey")
+        self.load_encrypted_key()
+
+    def load_encrypted_key(self):
+        """
+        加載加密的私鑰。
+        :return: 私鑰的字節數據。
+        """
+        try:
+            with open(os.path.join(self.path, "private.pem"), 'rb') as file:
+                encrypted_key = file.read()
+            return encrypted_key
+        except FileNotFoundError:
+            print(f"[ERROR] 文件未找到: private.pem")
+        except Exception as e:
+            print(f"[ERROR] 加載加密私鑰時發生錯誤: {e}")
+            traceback.print_exc()
+        return None
+
+    def try_decrypt(self, password: str) -> bool:
+        """
+        嘗試使用提供的密碼解密加密私鑰。
+        :param password: 用於解密私鑰的密碼。
+        :return: 解密是否成功（True or False）。
+        """
+        encrypted_key = self.load_encrypted_key()
+        if not encrypted_key:
+            return False
+
+        try:
+            self.key = RSA.import_key(encrypted_key, passphrase=password)
+            print("[INFO] 解密成功！")
+            return True
+        except ValueError:
+            print("[WARNING] 解密失敗，密碼可能不正確。")
+        except Exception as e:
+            print(f"[ERROR] 解密過程中發生錯誤: {e}")
+            traceback.print_exc()
+
+        return False
 
 class NetCatCHAT(QObject):
     devices_updated = pyqtSignal(list)
@@ -117,7 +183,7 @@ class NetCatCHAT(QObject):
             "uuid": "123e4567-e89b-12d3-a456-426614174000",
             "username": None
         }
-        self.own_ip = 'self.get_own_ip()'
+        self.own_ip = self.get_own_ip()
         self.stop_listener = threading.Event()
         self.stop_broadcast = threading.Event()
         self.sender_thread = None
