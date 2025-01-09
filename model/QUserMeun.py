@@ -5,9 +5,9 @@ from PyQt6.QtGui import *
 from model import *
 from common import *
 
-settings = Config("Personal")
 manager = UserDataManager()
-network = NetCatCHAT(settings.load_username())
+network = NetCatCHAT()
+settings = Config("Personal")
 
 class BaseCustomWidget(QListWidgetItem):
     def __init__(self, parent=None, size: QSize = QSize(60, 60)):
@@ -93,7 +93,6 @@ class QUserlistview(QListWidget):
 
 
 class QUserMeun(QWidget):
-    network.start_broadcast()
     def __init__(self, parent=None):
         super().__init__(parent)
         self.vlayout = QVBoxLayout(self)
@@ -114,6 +113,8 @@ class QUserMeun(QWidget):
         self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.vlayout.addWidget(self.user_list_view, 1)
 
-    def style(self):
-        self.setStyleSheet("""
-        """)
+    def showEvent(self, event):
+        """窗口顯示事件，發送 `window_opened` 信號。"""
+        super().showEvent(event)  # 保持原始顯示事件行為
+        network.update_name(settings.load_username())
+        network.start_broadcast()

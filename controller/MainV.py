@@ -7,6 +7,7 @@ from common import *
 from view import MainFrame
 
 ip = IPclass()
+settings = Config("Personal")
 
 class MainV(MainFrame):
     def __init__(self):
@@ -15,10 +16,9 @@ class MainV(MainFrame):
         self.linespace = QFrame(self)
         self.usermenu = QUserMeun()
 
-        self.settings = Config("Personal")
-        self.__avatar_path = self.settings.load_avatar_path()
-        self.__personal_name = self.settings.load_username()
-        self.__personal_ipv4 = self.settings.load_useripv4() or ip.curripv4
+        self.__avatar_path = settings.load_avatar_path()
+        self.__personal_name = settings.load_username()
+        self.__personal_ipv4 = settings.load_useripv4() or ip.curripv4
 
         self.ui_init()
 

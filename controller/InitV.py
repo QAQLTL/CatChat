@@ -252,7 +252,7 @@ class SslCrypto(QWidget):
         if len(password) == 4 and password.isdigit():
             sslcontroller.create_key(password)
             settings.save_ssl_crypto(True)
-        else:
+        elif len(password) == 0:
             sslcontroller.create_key()
             settings.save_ssl_crypto(False)
 

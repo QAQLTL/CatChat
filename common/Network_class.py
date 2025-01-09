@@ -13,14 +13,15 @@ from .DataController_class import DataController
 
 class IPclass:
     def __init__(self):
-        self.curripv4:str = ""
-        self.curripv6:str = ""
-        self.serveriplist:List[str]
+        self.curripv4: str = ""
+        self.curripv6: str = ""
+        self.serveriplist: List[str] = []
         self.hostname = socket.gethostname()
 
         self.getcurrip()
 
     def check_internet(self, url="https://www.google.com", timeout=1):
+        """檢查是否能連接到指定網址以驗證網路連線。"""
         try:
             response = requests.get(url, timeout=timeout)
             if response.status_code == 200:
@@ -33,17 +34,32 @@ class IPclass:
         return False
 
     def getcurrip(self):
+        """取得本機的 IPv4 和 IPv6 位址。"""
         try:
+            ipv4_set = set()
+            ipv6_set = set()
             for info in socket.getaddrinfo(self.hostname, None):
                 family, _, _, _, sockaddr = info
                 ip = sockaddr[0]
                 if family == socket.AF_INET:
-                    self.curripv4 = ip
+                    ipv4_set.add(ip)
                 elif family == socket.AF_INET6:
-                    self.curripv6 = ip
+                    ipv6_set.add(ip)
+
+            # 確保選取第一個有效地址
+            self.curripv4 = next(iter(ipv4_set), "")
+            self.curripv6 = next(iter(ipv6_set), "")
+
+            # 儲存所有找到的 IP 地址
+            self.serveriplist = list(ipv4_set.union(ipv6_set))
         except Exception as e:
             print(f"Error getting IP addresses: {e}")
 
+    def get_ipv4(self) -> str:
+        return self.curripv4
+
+    def get_ipv6(self) -> str:
+        return self.curripv6
 
 class SslClass:
     def __init__(self):
@@ -89,7 +105,6 @@ class SslClass:
             except Exception as e:
                 print(f"Error generating keys: {e}")
 
-
 class NetCatCHAT(QObject):
     # 定義信號
     devices_updated = pyqtSignal(list)
@@ -99,13 +114,13 @@ class NetCatCHAT(QObject):
     BUFFER_SIZE = 1024
     TIMEOUT_THRESHOLD = 5  # 單位: 秒，超過這段時間未收到回應的 IP 會被移除
 
-    def __init__(self, username):
+    def __init__(self):
         super().__init__()
         self.identifier = {
             "program": "CatCHAT",
             "version": "1.0",
             "uuid": "123e4567-e89b-12d3-a456-426614174000",
-            "username": username  # 新增用戶名
+            "username": None # 新增用戶名
         }
         self.own_ip = 'self.get_own_ip()'
         self.stop_listener = threading.Event()
@@ -220,3 +235,57 @@ class NetCatCHAT(QObject):
             self.listener_thread.join()
         if self.clean_up_thread:
             self.clean_up_thread.join()
+
+    def update_name(self, name):
+        self.identifier["username"] = name
+
+class UDPServer:
+    def __init__(self, ip_class: IPclass, port: int = 12345):
+        self.ip_class = ip_class
+        self.port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.running = False
+
+    def start_server(self):
+        try:
+            ipv4 = self.ip_class.get_ipv4()
+            if not ipv4:
+                print("[ERROR] 無法取得 IPv4 地址。")
+                return
+
+            self.socket.bind((ipv4, self.port))
+            self.running = True
+            print(f"[INFO] 伺服器啟動於 {ipv4}:{self.port}")
+
+            while self.running:
+                data, addr = self.socket.recvfrom(1024)
+                print(f"[INFO] 收到來自 {addr} 的訊息: {data.decode('utf-8')}")
+        except Exception as e:
+            print(f"[ERROR] 伺服器錯誤: {e}")
+        finally:
+            self.socket.close()
+
+    def stop_server(self):
+        self.running = False
+        print("[INFO] 伺服器已停止。")
+
+class UDPClient:
+    def __init__(self, ip_class: IPclass, server_ip: str, server_port: int = 12345):
+        self.ip_class = ip_class
+        self.server_ip = server_ip
+        self.server_port = server_port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    def send_message(self, message: str):
+        try:
+            ipv4 = self.ip_class.get_ipv4()
+            if not ipv4:
+                print("[ERROR] 無法取得 IPv4 地址。")
+                return
+
+            self.socket.sendto(message.encode('utf-8'), (self.server_ip, self.server_port))
+            print(f"[INFO] 訊息已發送到 {self.server_ip}:{self.server_port}: {message}")
+        except Exception as e:
+            print(f"[ERROR] 傳送訊息時發生錯誤: {e}")
+        finally:
+            self.socket.close()

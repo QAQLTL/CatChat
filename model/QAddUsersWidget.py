@@ -28,6 +28,8 @@ class AddUserWindow(QPopupWidget):
             parent_pos = self.parent.mapToGlobal(QPoint(0, 0))
             self.move(parent_pos.x() + self.parent.width() + 15, parent_pos.y() - 10)
 
+        self.list_widget.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+
         self.vlayout.addWidget(self.searchbar, alignment=Qt.AlignmentFlag.AlignTop)
         self.vlayout.addWidget(self.list_widget, alignment=Qt.AlignmentFlag.AlignBottom)
 
