@@ -14,7 +14,7 @@ class AddUserWindow(QPopupWidget):
     def __init__(self, parent=None):
         super().__init__()
         self.parent = parent
-        self.items = []  # 預設為空列表
+        self.items = []
         self.searchbar = SearchApp()
         self.list_widget = QListWidget()
         self.vlayout = QVBoxLayout(self)
@@ -33,31 +33,29 @@ class AddUserWindow(QPopupWidget):
         self.vlayout.addWidget(self.searchbar, alignment=Qt.AlignmentFlag.AlignTop)
         self.vlayout.addWidget(self.list_widget, alignment=Qt.AlignmentFlag.AlignBottom)
 
-        # 將 search_bar 的文字更改信號連結到 update_list
+
         self.searchbar.search_bar.textChanged.connect(self.update_list)
         self.apply_list_widget_style()
 
     def update_list(self):
         """更新列表，根據搜尋文字過濾和排序。"""
         search_text = self.searchbar.search_bar.text().strip()
-        self.list_widget.clear()  # 清空列表
+        self.list_widget.clear()
 
         if search_text:
-            # 過濾符合搜尋文字的項目
+
             filtered_items = [
                 item for item in self.items if search_text.lower() in item["username"].lower()
             ]
 
-            # 根據搜尋文字在 `username` 中的索引進行排序
+
             sorted_filtered_items = sorted(
                 filtered_items,
                 key=lambda x: x["username"].lower().index(search_text.lower())
             )
 
-            # 加入篩選和排序後的用戶名
             self.list_widget.addItems([item["username"] for item in sorted_filtered_items])
         else:
-            # 若無搜尋文字，恢復顯示所有用戶名
             self.list_widget.addItems([item["username"] for item in self.items])
 
     def update_items(self, items):
@@ -105,10 +103,10 @@ class AddUserWindow(QPopupWidget):
 
     def showEvent(self, event):
         """窗口顯示事件，發送 `window_opened` 信號。"""
-        super().showEvent(event)  # 保持原始顯示事件行為
-        self.window_opened.emit()  # 發出 `window_opened` 信號
+        super().showEvent(event)
+        self.window_opened.emit()
 
     def closeEvent(self, event):
         """窗口關閉事件，發送 `window_closed` 信號。"""
-        super().closeEvent(event)  # 保持原始關閉事件行為
-        self.window_closed.emit()  # 發出 `window_closed` 信號
+        super().closeEvent(event)
+        self.window_closed.emit()

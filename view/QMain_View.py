@@ -10,15 +10,12 @@ class MainFrame(FramelessWindow):
         # self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         self.setStyleSheet("#MainUI { background-color: #F0F5F9; }")
 
-        # Main layout setup
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
 
-        # VLayout setup with MainLayout and navigation layout
         self.VLayout = QtWidgets.QVBoxLayout()
         self.VLayout.setContentsMargins(5, 10, 5, 10)
 
-        # Add layouts to the main layout
         self.verticalLayout_2.addLayout(self.VLayout)
 
         # set Buttom layout

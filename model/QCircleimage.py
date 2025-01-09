@@ -36,8 +36,8 @@ class QCircleimage(QLabel):
         self.setPixmap(self.__pixmap)
         self.setScaledContents(True)
 
-        self.image_set = True  # 標記圖片已設置
-        self.update()  # 刷新繪圖
+        self.image_set = True
+        self.update()
 
     def paintEvent(self, event):
         if self.image_set:
@@ -45,28 +45,27 @@ class QCircleimage(QLabel):
             return
 
         super().paintEvent(event)
-        
-        # 初始化 QPainter
+
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # 绘制外部圆边
-        pen = QPen(QColor("#B0AFBB"), 3)  # 设置边框颜色和宽度
+
+        pen = QPen(QColor("#B0AFBB"), 3)
         pen.setStyle(Qt.PenStyle.DotLine)
         painter.setPen(pen)
-        painter.setBrush(QBrush(QColor("transparent")))  # 设置圆的填充颜色
+        painter.setBrush(QBrush(QColor("transparent")))
         painter.drawEllipse(3, 3, self.width() - 6, self.height() - 6)
 
-        # 绘制中间的 "+"
+
         pen.setStyle(Qt.PenStyle.SolidLine)
-        pen.setColor(QColor("#B0AFBB"))  # 设置 "+" 的颜色
+        pen.setColor(QColor("#B0AFBB"))
         pen.setWidth(4)
         painter.setPen(pen)
-        # 计算中心点
+
         cx, cy = self.width() // 2, self.height() // 2
-        # 画水平线
+
         painter.drawLine(cx - 10, cy, cx + 10, cy)
-        # 画垂直线
+
         painter.drawLine(cx, cy - 10, cx, cy + 10)
 
     def image(self):

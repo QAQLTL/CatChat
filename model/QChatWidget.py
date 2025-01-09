@@ -48,16 +48,13 @@ class ChatWindow(QMainWindow):
         self.setWindowTitle("Chat Interface")
         self.setGeometry(200, 200, 400, 600)
 
-        # 主視圖
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
 
-        # 聊天區域
         self.chat_area = QScrollArea()
         self.chat_area.setWidgetResizable(True)
         self.chat_area.setStyleSheet("QScrollArea { border: none; }")
 
-        # 聊天內容容器
         self.chat_content = QWidget()
         self.chat_content.setStyleSheet("background-color: #f7f7f7;")
         self.chat_layout = QVBoxLayout()
@@ -66,19 +63,16 @@ class ChatWindow(QMainWindow):
         self.chat_content.setLayout(self.chat_layout)
         self.chat_area.setWidget(self.chat_content)
 
-        # 按鈕區域
         self.button_layout = QHBoxLayout()
         self.send_left_button = QPushButton("Send Left")
         self.send_right_button = QPushButton("Send Right")
         self.button_layout.addWidget(self.send_left_button)
         self.button_layout.addWidget(self.send_right_button)
 
-        # 主佈局
         main_layout = QVBoxLayout(self.central_widget)
         main_layout.addWidget(self.chat_area)
         main_layout.addLayout(self.button_layout)
 
-        # 信號與槽
         self.send_left_button.clicked.connect(self.add_left_bubble)
         self.send_right_button.clicked.connect(self.add_right_bubble)
 
@@ -86,12 +80,10 @@ class ChatWindow(QMainWindow):
         bubble = ChatBubble("Hello from left!", is_left=True)
         self.chat_layout.addWidget(bubble)
 
-        # 滾動到底部
         self.chat_area.verticalScrollBar().setValue(self.chat_area.verticalScrollBar().maximum())
 
     def add_right_bubble(self):
         bubble = ChatBubble("Hello from right!", is_left=False)
         self.chat_layout.addWidget(bubble)
 
-        # 滾動到底部
         self.chat_area.verticalScrollBar().setValue(self.chat_area.verticalScrollBar().maximum())

@@ -88,31 +88,26 @@ class SslClass:
 
         if cryptocode:
             try:
-                # 加密私钥并导出
                 private = key.export_key(passphrase=cryptocode, pkcs=8, protection="scryptAndAES128-CBC")
                 public = key.publickey().export_key()
-                # 保存加密的私钥和公钥
                 self.save_key(private, public)
             except Exception as e:
                 print(f"Error generating encrypted keys: {e}")
         else:
             try:
-                # 未加密的私钥和公钥
                 private = key.export_key()
                 public = key.publickey().export_key()
-                # 保存未加密的私钥和公钥
                 self.save_key(private, public)
             except Exception as e:
                 print(f"Error generating keys: {e}")
 
 class NetCatCHAT(QObject):
-    # 定義信號
     devices_updated = pyqtSignal(list)
 
     BROADCAST_PORT = 50000
     BROADCAST_ADDR = '<broadcast>'
     BUFFER_SIZE = 1024
-    TIMEOUT_THRESHOLD = 5  # 單位: 秒，超過這段時間未收到回應的 IP 會被移除
+    TIMEOUT_THRESHOLD = 5
 
     def __init__(self):
         super().__init__()
@@ -120,7 +115,7 @@ class NetCatCHAT(QObject):
             "program": "CatCHAT",
             "version": "1.0",
             "uuid": "123e4567-e89b-12d3-a456-426614174000",
-            "username": None # 新增用戶名
+            "username": None
         }
         self.own_ip = 'self.get_own_ip()'
         self.stop_listener = threading.Event()
@@ -128,7 +123,7 @@ class NetCatCHAT(QObject):
         self.sender_thread = None
         self.listener_thread = None
         self.clean_up_thread = None
-        self.found_devices = []  # 用於存儲設備資訊，每個設備是一個字典
+        self.found_devices = []
 
     def get_own_ip(self):
         """取得本機的 IP 位址，用於過濾自身訊息。"""
@@ -147,7 +142,7 @@ class NetCatCHAT(QObject):
             while not self.stop_broadcast.is_set():
                 sender.sendto(message, (self.BROADCAST_ADDR, self.BROADCAST_PORT))
                 print("[INFO] 廣播訊息已發送")
-                time.sleep(1)  # 加入延遲以減少網路流量和 CPU 使用率
+                time.sleep(1)
 
     def listen_for_responses(self):
         """接收來自其他電腦的訊息。"""
@@ -162,24 +157,20 @@ class NetCatCHAT(QObject):
 
             while not self.stop_listener.is_set():
                 try:
-                    listener.settimeout(1)  # 設置超時以便檢查停止事件
+                    listener.settimeout(1)
                     data, addr = listener.recvfrom(self.BUFFER_SIZE)
                     try:
                         message = json.loads(data.decode('utf-8'))
                         if message.get("program") == self.identifier["program"] and addr[0] != self.own_ip:
-                            # 查找是否已存在該設備
                             existing_device = next((d for d in self.found_devices if d['ip'] == addr[0]), None)
                             if existing_device:
-                                # 更新最後回應時間
                                 existing_device["last_seen"] = time.time()
                             else:
-                                # 新增設備
                                 self.found_devices.append({
                                     "ip": addr[0],
                                     "username": message.get("username", "Unknown"),
                                     "last_seen": time.time()
                                 })
-                            # 發出信號
                             self.devices_updated.emit(self.found_devices)
                             print(f"[INFO] 收到來自相同程式的電腦: {addr[0]} (用戶名: {message.get('username')})")
                     except (UnicodeDecodeError, json.JSONDecodeError):
@@ -190,7 +181,7 @@ class NetCatCHAT(QObject):
     def clean_up_devices(self):
         """移除超時未回應的設備。"""
         while not self.stop_listener.is_set():
-            time.sleep(1)  # 每秒檢查一次
+            time.sleep(1)
             current_time = time.time()
             removed_devices = [
                 d for d in self.found_devices if current_time - d["last_seen"] > self.TIMEOUT_THRESHOLD
@@ -201,7 +192,6 @@ class NetCatCHAT(QObject):
                 print(f"[INFO] 移除超時未回應的設備: {device['ip']}")
 
             if removed_devices:
-                # 發出信號
                 self.devices_updated.emit(self.found_devices)
 
     def start_broadcast(self):

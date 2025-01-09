@@ -115,6 +115,6 @@ class QUserMeun(QWidget):
 
     def showEvent(self, event):
         """窗口顯示事件，發送 `window_opened` 信號。"""
-        super().showEvent(event)  # 保持原始顯示事件行為
+        super().showEvent(event)
         network.update_name(settings.load_username())
         network.start_broadcast()

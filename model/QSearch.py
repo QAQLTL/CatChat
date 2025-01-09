@@ -8,7 +8,6 @@ class SearchApp(QWidget):
     def __init__(self):
         super().__init__()
 
-        # 建立 UI 元件
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("輸入搜尋內容...")
         self.search_bar.setStyleSheet(

@@ -221,33 +221,32 @@ class SslCrypto(QWidget):
     def ui_init(self):
         self.setObjectName("SSl_page")
         for i in range(4):
-            input_box = PasswordInputBox(i, self)  # 使用自定義輸入框
-            input_box.setMaxLength(1)  # 限制每個框只能輸入一個字元
-            input_box.setAlignment(Qt.AlignmentFlag.AlignCenter)  # 置中對齊
-            input_box.setEchoMode(QLineEdit.EchoMode.Normal)  # 顯示輸入內容
-            input_box.setPlaceholderText("0")  # 預設提示為數字
-            # input_box.setInputMask("D")  # 只接受數字
-            input_box.textChanged.connect(lambda text, idx=i: self.on_text_changed(text, idx))  # 動態連接事件
+            input_box = PasswordInputBox(i, self)
+            input_box.setMaxLength(1)
+            input_box.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            input_box.setEchoMode(QLineEdit.EchoMode.Normal)
+            input_box.setPlaceholderText("0")
+            # input_box.setInputMask("D")
+            input_box.textChanged.connect(lambda text, idx=i: self.on_text_changed(text, idx))
             self.box_layout.addWidget(input_box, 0, alignment=Qt.AlignmentFlag.AlignCenter)
             self.input_boxes.append(input_box)
 
         self.confirm_button.seticon("D:/python/CatChat/res/left-arrow.png")
         self.confirm_button.clicked.connect(self.check_password)
 
-        # 加入版面
+
         self.main_layout.addLayout(self.box_layout)
         self.main_layout.addWidget(self.confirm_button, 0, alignment=Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignRight)
         self.main_layout.setContentsMargins(5, 140, 5, 5)
 
     def on_text_changed(self, text, idx):
-        if text:  # 當輸入框有輸入時
-            if idx < 3:  # 如果不是最後一個方格，自動跳到下一個
+        if text:
+            if idx < 3:
                 self.input_boxes[idx + 1].setFocus()
-            else:  # 如果是最後一個方格，回到按鈕
+            else:
                 self.confirm_button.setFocus()
 
     def check_password(self):
-        # 獲取所有輸入框的內容並拼接
         password = ''.join(box.text() for box in self.input_boxes)
         if len(password) == 4 and password.isdigit():
             sslcontroller.create_key(password)
@@ -277,12 +276,11 @@ class PasswordInputBox(QLineEdit):
         self.parent_widget = parent
 
     def keyPressEvent(self, event):
-        # 如果按下退格鍵並且目前輸入框是空的
         if event.key() == Qt.Key.Key_Backspace and not self.text():
-            if self.index > 0:  # 如果不是第一個輸入框
+            if self.index > 0:
                 prev_box = self.parent_widget.input_boxes[self.index - 1]
-                prev_box.setFocus()  # 聚焦到前一個輸入框
-                prev_box.clear()  # 清除前一個輸入框的內容
+                prev_box.setFocus()
+                prev_box.clear()
         else:
             super().keyPressEvent(event)
 
@@ -290,37 +288,35 @@ class LoadingAnimation(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setMinimumSize(50, 50)  # 設置固定的最小大小，確保可見
+        self.setMinimumSize(50, 50)
 
-        # 加載動畫參數
-        self.angle = 0  # 當前角度
+        self.angle = 0
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_animation)
-        self.timer.start(30)  # 每 30 毫秒更新一次
+        self.timer.start(30)
 
     def paintEvent(self, event):
         """繪製加載動畫"""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # 獲取窗口大小
         rect = self.rect()
-        size = min(rect.width(), rect.height()) // 4  # 動畫的大小
+        size = min(rect.width(), rect.height()) // 4
 
-        # 設置畫筆
+
         pen = QPen(Qt.GlobalColor.gray, 5)
         painter.setPen(pen)
 
-        # 計算圓心
+
         center_x = rect.width() // 2
         center_y = rect.height() // 2
 
-        # 畫圓環動畫
+
         painter.translate(center_x, center_y)
-        painter.rotate(self.angle)  # 旋轉畫布
-        painter.drawArc(-size, -size, size * 2, size * 2, 0, 120 * 16)  # 繪製部分圓弧
+        painter.rotate(self.angle)
+        painter.drawArc(-size, -size, size * 2, size * 2, 0, 120 * 16)
 
     def update_animation(self):
         """更新動畫角度並刷新界面"""
-        self.angle = (self.angle + 5) % 360  # 每次增加 5 度
-        self.update()  # 刷新畫面
+        self.angle = (self.angle + 5) % 360
+        self.update()

@@ -31,20 +31,18 @@ class Window(InitV):
 
     def ui_chagne(self):
         try:
-            # 創建新窗口
             MainUi = MainV()
             screen_geometry = self.screen().availableGeometry()
             screen_x = screen_geometry.x()
             screen_height = screen_geometry.height()
 
-            # 計算新窗口位置
             main_ui_width = MainUi.width()
             main_ui_height = MainUi.height()
             vertical_center = screen_geometry.y() + (screen_height - main_ui_height) // 2
 
             MainUi.setGeometry(
-                screen_x + 15,  # 左側
-                vertical_center,  # 垂直居中
+                screen_x + 15,
+                vertical_center,
                 main_ui_width,
                 main_ui_height
             )
