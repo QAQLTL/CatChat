@@ -1,9 +1,7 @@
 import os
 import shutil
+import json
 from pathlib import Path
-from sqlalchemy import create_engine, Column, String
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
 
 class DataController:
     def __init__(self):
@@ -28,108 +26,109 @@ class DataController:
             shutil.copyfile(filepath, filename_path + filename + file_extension)
             return filename_path + filename + file_extension
 
-Base = declarative_base()
-datac = DataController()
 
-class User(Base):
-    __tablename__ = "users"
+class FriendManager:
+    def __init__(self, file_path):
+        """
+        初始化好友管理器
+        :param file_path: 存储好友数据的 JSON 文件路径
+        """
+        self.file_path = file_path
+        self.friends = []
+        self.load_from_json()  # 自动加载现有数据
 
-    avatar_path = Column(String, nullable=False)
-    name = Column(String, nullable=False, primary_key=True)  # 使用 `name` 作為唯一主鍵
-    ipv4 = Column(String, nullable=True)
-    ipv6 = Column(String, nullable=True)
-    public_key = Column(String, nullable=True)
+    def add_friend(self, name, avatar_path, ipv4=None, ipv6=None, publickey_path=None, status="等待加好友"):
+        """
+        添加好友到内存数据，如果好友已存在，则不添加
+        :param name: 好友名称
+        :param avatar_path: 头像路径
+        :param ipv4: IPv4 地址（可选）
+        :param ipv6: IPv6 地址（可选）
+        :param publickey_path: 公钥路径（可选）
+        :param status: 好友状态（默认是“等待加好友”）
+        """
+        # 检查是否已经存在相同的好友（根据 name 或 publickey_path 判断）
+        for friend in self.friends:
+            if friend["name"] == name or (publickey_path and friend.get("publickey_path") == publickey_path):
+                print(f"好友 {name} 已存在，无法重复添加")
+                return
 
-class UserDataManager:
-    def __init__(self, db_name="usersdata"):
-        datac.base_path_create(datac.base_path + "/sql")
-        self.engine = create_engine(f'sqlite:///data/sql/{db_name}.db')
-        Base.metadata.create_all(self.engine)
-        self.Session = sessionmaker(bind=self.engine)
+        # 添加新的好友
+        friend = {
+            "name": name,
+            "avatar_path": avatar_path,
+            "ipv4": ipv4,
+            "ipv6": ipv6,
+            "publickey_path": publickey_path,
+            "status": status,
+        }
+        self.friends.append(friend)
+        print(f"好友 {name} 已成功添加")
 
-    def add_user(self, avatar_path, name, ipv4=None, ipv6=None, public_key=None):
-        session = self.Session()
+    def update_friend_status(self, name, new_status):
+        """
+        更新指定好友的状态
+        :param name: 好友名称
+        :param new_status: 新的状态
+        """
+        for friend in self.friends:
+            if friend["name"] == name:
+                friend["status"] = new_status
+                print(f"已更新好友 {name} 的状态为 {new_status}")
+                return
+        print(f"未找到名为 {name} 的好友")
+
+    def save_to_json(self):
+        """
+        将好友数据保存到 JSON 文件（增量更新）
+        """
+        # 如果文件存在，加载现有数据，合并新数据
+        existing_data = []
+        if os.path.exists(self.file_path):
+            try:
+                with open(self.file_path, 'r', encoding='utf-8') as json_file:
+                    existing_data = json.load(json_file)
+            except json.JSONDecodeError:
+                print("现有文件内容无效，将覆盖保存新文件。")
+
+        # 合并数据（避免重复）
+        existing_names = {friend["name"] for friend in existing_data}
+        for friend in self.friends:
+            if friend["name"] not in existing_names:
+                existing_data.append(friend)
+
+        # 保存数据
         try:
-            user = User(
-                avatar_path=avatar_path,
-                name=name,
-                ipv4=ipv4,
-                ipv6=ipv6,
-                public_key=public_key,
-            )
-            session.add(user)
-            session.commit()
-            print(f"[INFO] User '{name}' successfully added.")
+            with open(self.file_path, 'w', encoding='utf-8') as json_file:
+                json.dump(existing_data, json_file, indent=4, ensure_ascii=False)
+            print(f"好友数据已保存到 {self.file_path}")
         except Exception as e:
-            session.rollback()
-            print(f"[ERROR] Failed to add user '{name}': {e}")
-            raise e
-        finally:
-            session.close()
+            print(f"保存好友数据时出错: {e}")
 
-    def get_all_users(self):
-        session = self.Session()
-        try:
-            users = session.query(User).all()
-            if not users:
-                print("[WARNING] No users found in the database.")
-                return []
-            print(f"[INFO] Retrieved {len(users)} users from the database.")
-            return [
-                {
-                    "avatar_path": user.avatar_path,
-                    "name": user.name,
-                    "ipv4": user.ipv4,
-                    "ipv6": user.ipv6,
-                    "public_key": user.public_key,
-                }
-                for user in users
-            ]
-        finally:
-            session.close()
+    def load_from_json(self):
+        """
+        从 JSON 文件加载好友数据
+        """
+        if os.path.exists(self.file_path):
+            try:
+                with open(self.file_path, 'r', encoding='utf-8') as json_file:
+                    self.friends = json.load(json_file)
+                print(f"好友数据已从 {self.file_path} 加载")
+            except json.JSONDecodeError:
+                print(f"文件 {self.file_path} 格式错误，无法加载好友数据")
+        else:
+            print(f"文件 {self.file_path} 不存在，无法加载好友数据")
 
-    def update_user(self, name, avatar_path=None, ipv4=None, ipv6=None, public_key=None):
-        session = self.Session()
-        try:
-            user = session.query(User).filter_by(name=name).first()
-            if not user:
-                raise ValueError(f"[WARNING] No user found with name: {name}")
-            if avatar_path:
-                user.avatar_path = avatar_path
-            if ipv4:
-                user.ipv4 = ipv4
-            if ipv6:
-                user.ipv6 = ipv6
-            if public_key:
-                user.public_key = public_key
-            session.commit()
-            print(f"[INFO] User '{name}' successfully updated.")
-        except ValueError as ve:
-            print(ve)
-            raise ve
-        except Exception as e:
-            session.rollback()
-            print(f"[ERROR] Failed to update user '{name}': {e}")
-            raise e
-        finally:
-            session.close()
+    def list_friends(self):
+        """
+        列出所有好友数据
+        """
+        if not self.friends:
+            print("好友列表为空")
+            return
 
-    def delete_user(self, name):
-        session = self.Session()
-        try:
-            user = session.query(User).filter_by(name=name).first()
-            if user:
-                session.delete(user)
-                session.commit()
-                print(f"[INFO] User '{name}' successfully deleted.")
-            else:
-                raise ValueError(f"[WARNING] No user found with name: {name}")
-        except ValueError as ve:
-            print(ve)
-            raise ve
-        except Exception as e:
-            session.rollback()
-            print(f"[ERROR] Failed to delete user '{name}': {e}")
-            raise e
-        finally:
-            session.close()
+        for index, friend in enumerate(self.friends, start=1):
+            print(f"好友 {index}:")
+            for key, value in friend.items():
+                print(f"  {key}: {value}")
+            print()

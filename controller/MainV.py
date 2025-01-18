@@ -10,6 +10,7 @@ ip = IPclass()
 settings = Config("Personal")
 
 class MainV(MainFrame):
+    tcp_server = TCPServer()
     def __init__(self):
         super().__init__()
         self.personal_avatar = QAvatarWidget(self)
@@ -20,9 +21,7 @@ class MainV(MainFrame):
         self.__personal_name = settings.load_username()
         self.__personal_ipv4 = settings.load_useripv4() or ip.curripv4
 
-        udp_server = UDPServer()
-        udp_server.set_callback(print)
-        udp_server.start_server()
+        self.tcp_server.start_server()
 
         self.ui_init()
 

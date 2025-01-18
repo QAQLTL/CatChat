@@ -7,6 +7,8 @@ from .QSearch import SearchApp
 from .QPopupWidget import QPopupWidget
 from common import *
 
+config = Config("Personal")
+
 class AddUserWindow(QPopupWidget):
     window_closed = pyqtSignal()
     window_opened = pyqtSignal()
@@ -43,7 +45,8 @@ class AddUserWindow(QPopupWidget):
             selected_username = current.text()
             selected_item = next((item for item in self.items if item["username"] == selected_username), None)
             if selected_item:
-                UDPClient(selected_item['ip']).send_message('Hello')
+                request = FriendRequestSender(config.load_username(), config.load_avatar_path()).create_request()
+                TCPClient(selected_item['ip']).send_message(request)
             else:
                 print(f"找不到 {selected_username} 的完整資料")
 

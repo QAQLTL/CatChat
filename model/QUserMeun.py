@@ -5,9 +5,10 @@ from PyQt6.QtGui import *
 from model import *
 from common import *
 
-manager = UserDataManager()
 network = NetCatCHAT()
 settings = Config("Personal")
+dataManager = FriendManager(f"{os.getcwd()}/data/JsonData/userdata.json")
+dataManager.load_from_json()
 
 class BaseCustomWidget(QListWidgetItem):
     def __init__(self, parent=None, size: QSize = QSize(60, 60)):
@@ -103,8 +104,10 @@ class QUserMeun(QWidget):
         item = CustomAddWidget(self.user_list_view)
         self.user_list_view.setItemWidget(item, item.widget)
 
-        for i in manager.get_all_users():
-            item = CustomWidget(self.user_list_view,i["avatar_path"])
+        for friend in dataManager.friends:
+            avatar_path = friend.get("avatar_path", "")
+
+            item = CustomWidget(self.user_list_view, avatar_path)
             self.user_list_view.setItemWidget(item, item.widget)
 
         self.vlayout.setSpacing(0)

@@ -7,10 +7,10 @@ from view import QInitView
 from model import *
 from common import *
 
-ip = IPclass()
 datacontroller = DataController()
 sslcontroller = SslClass()
 settings = Config("Personal")
+ip = IPclass()
 
 class InitV(QInitView):
     def __init__(self, parent=None):
@@ -258,7 +258,7 @@ class SslCrypto(QWidget):
                     self.checked = True
                 else:
                     self.checked = False
-            elif len(password) == 0:
+            else:
                 self.checked = False
         else:
             if len(password) == 4:

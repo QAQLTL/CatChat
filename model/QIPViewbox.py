@@ -2,10 +2,7 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 
-from common import IPclass
-
-ip = IPclass()
-
+from common import *
 
 class QIPViewbox(QWidget):
     def __init__(self, parent=None):

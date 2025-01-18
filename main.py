@@ -54,7 +54,7 @@ class Window(InitV):
             )
             MainUi.show()
             self.setParent(MainUi)
-            self.hide()
+            self.close()
             MainUi.update()
         except Exception as e:
             print(f"UI切換錯誤: {e}")
